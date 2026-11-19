@@ -242,7 +242,7 @@ function fix(s){if(!Array.isArray(s.events))s.events=[];return s}
 function load(){
   try{const s=JSON.parse(localStorage.getItem(KEY));if(s)return fix(s)}catch(e){}
   return fix({settings:{n1:'',n2:'',date:'',time:'10:00',venue:'',photo:''},costs:[],savings:[],guests:[],
-    tasks:DEFAULT_TASKS.map(([t,w])=>({id:uid(),text:t,when:w,done:false}))});
+    tasks:[]});
 }
 let S=load(), tab='home', guestFilter='all', costView=null;
 const EV_COLORS=['#b48a4a','#8a3a58','#5f7a5a','#3b4f86','#c47a8f','#8a6a3a','#6b7f9a'];
@@ -455,10 +455,13 @@ function vSave(){
 }
 function vTask(){
   const done=S.tasks.filter(t=>t.done).length;
+  if(!S.tasks.length)return head('Persiapan','Senarai Semak','')+`<div class="card"><div class="empty"><span class="serif">Senarai masih kosong</span>Tulis sendiri perkara yang perlu dibuat, atau mula dengan senarai cadangan kami (${DEFAULT_TASKS.length} tugasan biasa — kursus kahwin, ujian HIV, tempah dewan dan lain-lain).<br>
+   <button class="addbtn" data-add>${icon('plus')}Tambah tugasan</button><br><button class="btn line" style="width:auto;margin-top:10px;padding:10px 16px" data-suggest>Guna senarai cadangan</button></div></div>`;
   return head(`${done} daripada ${S.tasks.length} selesai`,'Senarai Semak',ADD.task)+`
   <div class="card" style="padding:14px 18px"><div class="bar gold" style="margin:0"><i style="width:${S.tasks.length?done/S.tasks.length*100:0}%"></i></div></div>
   ${WHEN.map((w,i)=>{const items=S.tasks.filter(t=>(t.when??0)==i);if(!items.length)return'';return `<div class="card"><div class="catHead"><h3>${w}</h3><span class="sub">${items.filter(t=>t.done).length}/${items.length}</span></div>
-   <div class="list">${items.map(t=>`<div class="row ${t.done?'done':''}" data-task="${t.id}"><div class="chk ${t.done?'on':''}" data-toggle="${t.id}">${t.done?'✓':''}</div><div class="main"><div class="t">${esc(t.text)}</div></div></div>`).join('')}</div></div>`}).join('')}`;
+   <div class="list">${items.map(t=>`<div class="row ${t.done?'done':''}" data-task="${t.id}"><div class="chk ${t.done?'on':''}" data-toggle="${t.id}">${t.done?'✓':''}</div><div class="main"><div class="t">${esc(t.text)}</div></div></div>`).join('')}</div></div>`}).join('')}
+  <div style="display:flex;justify-content:center;gap:22px;margin:4px 0 8px">${S.tasks.length<DEFAULT_TASKS.length?'<button class="linkbtn" data-suggest>+ Tambah senarai cadangan</button>':''}<button class="linkbtn" style="color:var(--warn)" data-cleartasks>Kosongkan senarai</button></div>`;
 }
 function vGuest(){
   const f=guestFilter, by=k=>S.guests.filter(g=>k==='all'||g.side===k);
@@ -627,6 +630,9 @@ document.getElementById('app').onclick=e=>{
   if(q('[data-newev]'))return formEvent();
   if(q('[data-editev]'))return formEvent(S.events.find(e=>e.id===costView));
   if(q('[data-add]'))return ({cost:formCost,save:formSave,task:formTask,guest:formGuest}[tab]||(()=>{}))();
+  if(q('[data-suggest]')){const have=new Set(S.tasks.map(t=>t.text.toLowerCase()));const add=DEFAULT_TASKS.filter(([t])=>!have.has(t.toLowerCase())).map(([t,w],i)=>({id:uid()+i,text:t,when:w,done:false}));
+    S.tasks.push(...add);save();render();return toast(add.length+' tugasan cadangan ditambah')}
+  if(q('[data-cleartasks]')){if(confirm('Padam semua '+S.tasks.length+' tugasan dalam senarai semak?')){S.tasks=[];save();render();toast('Senarai semak dikosongkan')}return}
   if(el=q('[data-toggle]')){const t=S.tasks.find(x=>x.id===el.dataset.toggle);t.done=!t.done;save();render();return}
   if(el=q('[data-cost]'))return formCost(S.costs.find(x=>x.id===el.dataset.cost));
   if(el=q('[data-save]'))return formSave(S.savings.find(x=>x.id===el.dataset.save));
