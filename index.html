@@ -127,6 +127,15 @@ h2{font-size:24px;margin:26px 2px 10px}
 .pill.warn{background:color-mix(in srgb,var(--warn) 15%,transparent);color:var(--warn)}
 .catHead{display:flex;justify-content:space-between;align-items:baseline}
 .catHead h3{margin:0;font:600 21px "Cormorant Garamond",serif}
+.stack{display:flex;height:12px;border-radius:99px;overflow:hidden;margin:12px 0 4px;background:color-mix(in srgb,var(--gold) 14%,var(--line));gap:2px}
+.stack i{display:block;height:100%;transition:width .5s}
+.dot{width:12px;height:12px;border-radius:50%;flex:none}
+.row.ev.sel{background:var(--accent-soft);margin:0 -10px;padding-left:10px;padding-right:10px;border-radius:14px}
+.linkbtn{appearance:none;border:0;background:none;color:var(--gold);font:600 12.5px Inter,sans-serif;cursor:pointer;padding:4px 0}
+.chips{display:flex;gap:8px;overflow-x:auto;margin:0 -16px 12px;padding:2px 16px 4px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{appearance:none;flex:none;white-space:nowrap;padding:9px 15px;border-radius:99px;border:1px solid color-mix(in srgb,var(--gold) 28%,var(--line));background:var(--card);color:var(--muted);font:500 13px Inter,sans-serif;cursor:pointer}
+.chip.on{background:var(--herograd);color:var(--gold-2);border-color:transparent}
 .chk{width:26px;height:26px;border-radius:9px;border:1.5px solid color-mix(in srgb,var(--gold) 50%,var(--line));flex:none;display:grid;place-items:center;cursor:pointer;font-size:14px}
 .chk.on{background:var(--goldgrad);border-color:transparent;color:#3a1222}
 .done .t{text-decoration:line-through;color:var(--muted)}
@@ -211,12 +220,19 @@ const DEFAULT_TASKS=[
  ['Bawa dokumen nikah & mas kahwin',5]
 ];
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const DEFAULT_EVENTS=[{id:'nikah',name:'Akad Nikah'},{id:'pr',name:'Majlis Pihak Perempuan'},{id:'lk',name:'Majlis Pihak Lelaki'}];
+function fix(s){if(!Array.isArray(s.events))s.events=DEFAULT_EVENTS.map(e=>({...e}));return s}
 function load(){
-  try{const s=JSON.parse(localStorage.getItem(KEY));if(s)return s}catch(e){}
-  return {settings:{n1:'',n2:'',date:'',time:'10:00',venue:'',photo:''},costs:[],savings:[],guests:[],
-    tasks:DEFAULT_TASKS.map(([t,w])=>({id:uid(),text:t,when:w,done:false}))};
+  try{const s=JSON.parse(localStorage.getItem(KEY));if(s)return fix(s)}catch(e){}
+  return fix({settings:{n1:'',n2:'',date:'',time:'10:00',venue:'',photo:''},costs:[],savings:[],guests:[],
+    tasks:DEFAULT_TASKS.map(([t,w])=>({id:uid(),text:t,when:w,done:false}))});
 }
-let S=load(), tab='home', guestFilter='all';
+let S=load(), tab='home', guestFilter='all', costFilter='all';
+const EV_COLORS=['#b48a4a','#8a3a58','#5f7a5a','#3b4f86','#c47a8f','#8a6a3a','#6b7f9a'];
+const evName=id=>(S.events.find(e=>e.id===id)||{}).name||'Umum / Bersama';
+const evList=()=>{const l=S.events.map((e,i)=>({id:e.id,name:e.name,col:EV_COLORS[i%EV_COLORS.length]}));
+  if(S.costs.some(c=>!c.ev||!S.events.find(e=>e.id===c.ev)))l.push({id:'',name:'Umum / Bersama',col:'#a89a8f'});return l};
+const evOf=c=>S.events.find(e=>e.id===c.ev)?c.ev:'';
 try{tab=localStorage.getItem(KEY+'-tab')||'home'}catch(e){}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S));return true}catch(e){toast('Ruang simpanan penuh');return false}};
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -368,18 +384,30 @@ function vHome(){
     <div class="amt">${rm(num(c.est)-num(c.paid))}<small><span class="pill ${c.due<now?'warn':''}">${c.due<now?'Lewat · ':''}${fmtDate(c.due)}</span></small></div></div>`).join(''):'<div class="empty" style="padding:14px">Tiada bayaran tertunggak.<br>Letak <b>tarikh akhir bayar</b> pada item kos untuk peringatan.</div>'}</div>`;
 }
 function vCost(){
-  const T=totals();
-  const groups=CATS.map(cat=>({cat,items:S.costs.filter(c=>(c.cat||'Lain-lain')===cat)})).filter(g=>g.items.length);
+  const evs=evList();
+  if(costFilter!=='all'&&!evs.some(e=>e.id===costFilter))costFilter='all';
+  const items=costFilter==='all'?S.costs:S.costs.filter(c=>evOf(c)===costFilter);
+  const est=sum(items,c=>c.est),paid=sum(items,c=>c.paid),all=sum(S.costs,c=>c.est);
+  const groups=CATS.map(cat=>({cat,items:items.filter(c=>(c.cat||'Lain-lain')===cat)})).filter(g=>g.items.length);
+  const br=evs.map(e=>{const it=S.costs.filter(c=>evOf(c)===e.id);return {...e,est:sum(it,c=>c.est),paid:sum(it,c=>c.paid),n:it.length}});
   return head('Bajet','Kos Majlis',S.costs.length?ADD.cost:'')+`
-  <div class="card"><div class="stat"><div class="l">Jumlah anggaran</div><div class="big">${rm(T.est)}</div></div>
-   <div class="bar gold"><i style="width:${T.est?T.paid/T.est*100:0}%"></i></div>
-   <div style="margin-top:8px"><div class="kv"><span>Sudah dibayar</span><b style="color:var(--ok)">${rm(T.paid)}</b></div>
-   <div class="kv"><span>Baki bayaran vendor</span><b style="color:var(--warn)">${rm(T.est-T.paid)}</b></div></div></div>
+  ${S.costs.length?`<div class="card">
+   <div class="catHead"><h3>Pecahan ikut majlis</h3><button class="linkbtn" data-events>Urus majlis</button></div>
+   <div class="stack">${br.filter(b=>b.est>0).map(b=>`<i style="width:${all?b.est/all*100:0}%;background:${b.col}"></i>`).join('')}</div>
+   <div class="list">${br.map(b=>`<div class="row ev ${costFilter===b.id?'sel':''}" data-ev="${b.id}"><span class="dot" style="background:${b.col}"></span>
+     <div class="main"><div class="t">${esc(b.name)}</div><div class="s">${b.n} item · dibayar ${rm(b.paid)}</div></div>
+     <div class="amt">${rm(b.est)}<small>${all?Math.round(b.est/all*100):0}%</small></div></div>`).join('')}</div></div>
+  <div class="chips">${[{id:'all',name:'Semua majlis'},...evs].map(e=>`<button class="chip ${costFilter===e.id?'on':''}" data-ev="${e.id}">${esc(e.name)}</button>`).join('')}</div>`:''}
+  <div class="card"><div class="stat"><div class="l">${costFilter==='all'?'Jumlah anggaran semua majlis':'Jumlah · '+esc(evName(costFilter))}</div><div class="big">${rm(est)}</div></div>
+   <div class="bar gold"><i style="width:${est?paid/est*100:0}%"></i></div>
+   <div style="margin-top:8px"><div class="kv"><span>Sudah dibayar</span><b style="color:var(--ok)">${rm(paid)}</b></div>
+   <div class="kv"><span>Baki bayaran vendor</span><b style="color:var(--warn)">${rm(est-paid)}</b></div></div></div>
+  ${!groups.length&&S.costs.length?`<div class="card empty">Tiada item kos untuk majlis ini lagi.<br><button class="addbtn" data-add>${icon('plus')}Tambah kos</button></div>`:''}
   ${groups.length?groups.map(g=>{const e=sum(g.items,c=>c.est),p=sum(g.items,c=>c.paid);return `
    <div class="card"><div class="catHead"><h3>${esc(g.cat)}</h3><span class="sub">${rm(e)}</span></div>
    <div class="bar gold" style="margin-bottom:4px"><i style="width:${e?p/e*100:0}%"></i></div>
    <div class="list">${g.items.map(c=>{const bal=num(c.est)-num(c.paid);return `<div class="row" data-cost="${c.id}"><div class="main"><div class="t">${esc(c.name)}</div>
-     <div class="s">${esc(c.vendor||'')}${c.vendor&&c.due?' · ':''}${c.due?'Bayar sebelum '+fmtDate(c.due):''}</div></div>
+     <div class="s">${[costFilter==='all'?esc(evName(evOf(c))):'',esc(c.vendor||''),c.due?'Bayar sebelum '+fmtDate(c.due):''].filter(Boolean).join(' · ')}</div></div>
      <div class="amt">${rm(c.est)}<small>${bal<=0?'<span class="pill ok">Selesai</span>':'Baki '+rm(bal)}</small></div></div>`}).join('')}</div></div>`}).join('')
   :`<div class="card">${emptyBox('Belum ada item kos','Mulakan dengan item besar — dewan, katering, pelamin.','Tambah kos pertama')}</div>`}`;
 }
@@ -428,6 +456,7 @@ function render(){
   const v={home:vHome,cost:vCost,save:vSave,task:vTask,guest:vGuest}[tab]||vHome;
   document.getElementById('app').innerHTML=v();
   clearInterval(cdTimer);if(tab==='home'){tick();cdTimer=setInterval(tick,1000);paintHero()}
+  const chip=document.querySelector('.chip.on'),cs=chip?.parentElement;if(chip&&cs)cs.scrollLeft=chip.offsetLeft-(cs.clientWidth-chip.offsetWidth)/2;
   badge();
 }
 
@@ -505,11 +534,22 @@ addEventListener('keydown',e=>{if(e.key==='Escape')close()});
 const upsert=(arr,item)=>{const i=arr.findIndex(x=>x.id===item.id);i<0?arr.push(item):arr[i]=item};
 
 function formCost(c={}){openForm('Bajet',c.id?'Kemaskini Kos':'Tambah Kos',[
-  {title:'Butiran',fields:[{k:'name',l:'Nama item',req:1,p:'cth: Katering 500 pax'},{k:'cat',l:'Kategori',t:'select',o:CATS,d:'Lain-lain'}]},
+  {title:'Butiran',fields:[{k:'name',l:'Nama item',req:1,p:'cth: Katering 500 pax'},
+    {k:'ev',l:'Untuk majlis',t:'select',o:[...S.events.map(e=>[e.id,e.name]),['','Umum / Bersama']],d:costFilter!=='all'?costFilter:(S.events[0]?.id||'')},
+    {k:'cat',l:'Kategori',t:'select',o:CATS,d:'Lain-lain'}]},
   {title:'Bayaran',fields:[[{k:'est',l:'Kos anggaran',t:'money',req:1},{k:'paid',l:'Sudah dibayar',t:'money'}],{k:'due',l:'Tarikh akhir bayar',t:'date'}]},
   {title:'Vendor',fields:[{k:'vendor',l:'Nama vendor / kedai',p:'Pilihan'},{k:'phone',l:'No. telefon',t:'tel',p:'cth: 012-345 6789'}],
    html:c.phone?`<a class="btn line" style="display:block;text-align:center;text-decoration:none;margin-top:12px" href="https://wa.me/${esc(String(c.phone).replace(/\D/g,'').replace(/^0/,'60'))}" target="_blank" rel="noopener">WhatsApp vendor</a>`:''}],
-  c,o=>{upsert(S.costs,{...c,...o,id:c.id||uid(),est:num(o.est),paid:num(o.paid)});toast('Disimpan')},c.id&&(()=>S.costs=S.costs.filter(x=>x.id!==c.id)))}
+  c.id?{...c,ev:evOf(c)}:c,o=>{upsert(S.costs,{...c,...o,id:c.id||uid(),est:num(o.est),paid:num(o.paid)});toast('Disimpan')},c.id&&(()=>S.costs=S.costs.filter(x=>x.id!==c.id)))}
+function formEvents(){
+  const val={};S.events.forEach(e=>val['e_'+e.id]=e.name);
+  openForm('Kos','Urus Majlis',[{fields:S.events.map((e,i)=>({k:'e_'+e.id,l:'Majlis '+(i+1),p:'Kosongkan untuk padam'})),
+    html:'<div class="hint">Tukar nama terus di sini. Kosongkan nama untuk padam majlis itu; kosnya akan dipindah ke "Umum / Bersama".</div>'},
+   {title:'Tambah majlis baru',fields:[{k:'new',l:'Nama majlis',p:'cth: Majlis Bertunang / Majlis Bertandang'}]}],val,o=>{
+    let gone=0;S.events=S.events.filter(e=>{const n=o['e_'+e.id];if(n){e.name=n;return true}gone++;S.costs.forEach(c=>{if(c.ev===e.id)c.ev=''});return false});
+    if(o.new)S.events.push({id:uid(),name:o.new});
+    toast(gone?gone+' majlis dipadam':'Senarai majlis disimpan')});
+}
 function formSave(s={}){openForm('Tabung',s.id?'Kemaskini Simpanan':'Rekod Simpanan',[
   {fields:[{k:'amt',l:'Jumlah',t:'money',req:1},{k:'date',l:'Tarikh',t:'date',d:today()},{k:'note',l:'Catatan',p:'cth: Gaji Disember / Duit ASB'},{k:'who',l:'Daripada',p:'cth: Saya / Tunang / Mak ayah'}]}],s,
   o=>{upsert(S.savings,{...s,...o,id:s.id||uid(),amt:num(o.amt)});toast('Simpanan direkod')},s.id&&(()=>S.savings=S.savings.filter(x=>x.id!==s.id)))}
@@ -539,7 +579,7 @@ function formSettings(){
   document.getElementById('exp').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S)],{type:'application/json'}));a.download='persediaan-kahwin-'+today()+'.json';a.click()};
   document.getElementById('imp').onclick=()=>document.getElementById('impf').click();
   document.getElementById('impf').onchange=async e=>{try{const d=JSON.parse(await e.target.files[0].text());if(!d.settings||!Array.isArray(d.costs))throw 0;
-    if(confirm('Gantikan semua data sekarang dengan fail ini?')){S={savings:[],guests:[],tasks:[],...d};save();close();render();toast('Data diimport')}}catch(_){toast('Fail tidak sah')}};
+    if(confirm('Gantikan semua data sekarang dengan fail ini?')){S=fix({savings:[],guests:[],tasks:[],...d});save();close();render();toast('Data diimport')}}catch(_){toast('Fail tidak sah')}};
 }
 
 document.getElementById('app').onclick=e=>{
@@ -555,6 +595,8 @@ document.getElementById('app').onclick=e=>{
   if(el=q('[data-task]'))return formTask(S.tasks.find(x=>x.id===el.dataset.task));
   if(el=q('[data-guest]'))return formGuest(S.guests.find(x=>x.id===el.dataset.guest));
   if(el=q('#gseg button')){guestFilter=el.dataset.f;render()}
+  if(q('[data-events]'))return formEvents();
+  if(el=q('[data-ev]')){const id=el.dataset.ev;costFilter=(el.classList.contains('ev')&&costFilter===id)?'all':id;render()}
 };
 
 render();
