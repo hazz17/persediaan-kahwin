@@ -5,54 +5,70 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Persediaan Kahwin</title>
 <meta name="description" content="Rancang kos, simpanan, senarai semak dan tetamu untuk hari perkahwinan.">
-<meta name="theme-color" content="#7a4b5c">
+<meta name="theme-color" content="#4a1a2e">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Kahwin">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Great+Vibes&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#faf6f2; --card:#ffffff; --ink:#2b2226; --muted:#8a7b80; --line:#eee4e0;
-  --accent:#7a4b5c; --accent-soft:#f3e7ea; --gold:#b8935a; --ok:#4f7a5c; --warn:#b5603f;
-  --radius:18px; --shadow:0 1px 2px rgba(60,30,40,.05),0 6px 20px rgba(60,30,40,.06);
+  --bg:#f6efe6; --card:#fffcf7; --ink:#2a1a20; --muted:#8c7a7f; --line:#eadfd2;
+  --accent:#6b2742; --accent-2:#4a1a2e; --accent-soft:#f3e6e6; --gold:#b48a4a; --gold-2:#e6c88f;
+  --goldgrad:linear-gradient(135deg,#9c7338 0%,#e9cf98 45%,#b48a4a 70%,#f1dcae 100%);
+  --ok:#4c7a58; --warn:#b0563a;
+  --radius:20px; --shadow:0 1px 1px rgba(74,26,46,.04),0 10px 30px -8px rgba(74,26,46,.14);
 }
 @media (prefers-color-scheme: dark){
-  :root{--bg:#1b1618;--card:#261f22;--ink:#f3ecee;--muted:#a8999e;--line:#3a2f33;
-    --accent:#d9a3b4;--accent-soft:#3a2a30;--gold:#d8b77f;--ok:#8cc29b;--warn:#e89a7a;
-    --shadow:none}
+  :root{--bg:#140d10;--card:#1f1519;--ink:#f5ece4;--muted:#a8969a;--line:#3a2a2f;
+    --accent:#e2b3c0;--accent-2:#2a141d;--accent-soft:#33212a;--gold:#d8b77f;--gold-2:#f0d9a8;--ok:#8cc29b;--warn:#e89a7a;
+    --shadow:0 10px 30px -10px rgba(0,0,0,.6)}
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 Inter,system-ui,sans-serif}
+body{background:radial-gradient(1200px 500px at 50% -200px,color-mix(in srgb,var(--gold-2) 35%,transparent),transparent 70%),var(--bg);background-attachment:fixed}
+.script{font-family:"Great Vibes",cursive;font-weight:400}
+.goldtxt{background:var(--goldgrad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.orn{display:flex;align-items:center;justify-content:center;gap:10px;color:var(--gold-2);margin:6px auto}
+.orn:before,.orn:after{content:"";height:1px;width:56px;background:linear-gradient(90deg,transparent,var(--gold-2))}
+.orn:after{transform:scaleX(-1)}
 body{padding-bottom:calc(84px + env(safe-area-inset-bottom))}
 .wrap{max-width:560px;margin:0 auto;padding:16px 16px 24px}
 h1,h2,.serif{font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;letter-spacing:.2px}
-h1{font-size:30px;margin:0;line-height:1.1}
-h2{font-size:22px;margin:22px 0 10px}
-.top{display:flex;align-items:center;justify-content:space-between;padding-top:env(safe-area-inset-top);margin-bottom:6px}
+h1{font-size:34px;margin:0;line-height:1.05}
+h2{font-size:24px;margin:24px 0 10px}
+.top{display:flex;align-items:center;justify-content:space-between;padding-top:env(safe-area-inset-top);margin:4px 0 14px}
+.top .sub{text-transform:uppercase;letter-spacing:2.4px;font-size:10.5px;color:var(--gold);font-weight:600}
 .sub{color:var(--muted);font-size:13px}
-.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--line);padding:16px;margin-bottom:12px}
-.hero{text-align:center;padding:22px 16px;background:linear-gradient(160deg,var(--accent-soft),var(--card))}
-.names{font-size:28px;margin:0 0 2px}
-.cd{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:16px 0 6px}
-.cd div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 0}
-.cd b{display:block;font-size:26px;font-variant-numeric:tabular-nums;color:var(--accent)}
-.cd span{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid color-mix(in srgb,var(--gold) 22%,var(--line));padding:18px;margin-bottom:12px;position:relative}
+.hero{text-align:center;padding:30px 18px 22px;color:#f7ecdf;border:1px solid rgba(230,200,143,.35);overflow:hidden;
+  background:radial-gradient(120% 80% at 50% 0%,#8a3a58 0%,transparent 60%),linear-gradient(165deg,#5a1f37 0%,#3a1222 100%)}
+.hero:before{content:"";position:absolute;inset:8px;border:1px solid rgba(230,200,143,.28);border-radius:14px;pointer-events:none}
+.hero .sub{color:rgba(247,236,223,.75)}
+.hero .kicker{font-size:10.5px;letter-spacing:3px;text-transform:uppercase;color:var(--gold-2);font-weight:600}
+.names{font-size:44px;margin:4px 0 2px;line-height:1.15}
+.cd{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:18px 0 4px}
+.cd div{background:rgba(255,255,255,.06);border:1px solid rgba(230,200,143,.3);border-radius:14px;padding:12px 0 9px;backdrop-filter:blur(6px)}
+.cd b{display:block;font:600 30px/1 "Cormorant Garamond",serif;font-variant-numeric:tabular-nums;background:var(--goldgrad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.cd span{font-size:9.5px;color:rgba(247,236,223,.7);text-transform:uppercase;letter-spacing:1.6px}
 .ringrow{display:flex;gap:16px;align-items:center}
 .ring{width:118px;height:118px;flex:none;position:relative}
 .ring svg{transform:rotate(-90deg)}
-.ring .pct{position:absolute;inset:0;display:grid;place-items:center;text-align:center;font-weight:600;font-size:22px}
-.ring .pct small{display:block;font-size:11px;color:var(--muted);font-weight:500}
-.kv{display:flex;justify-content:space-between;padding:5px 0;font-size:14px}
+.ring .pct{position:absolute;inset:0;display:grid;place-items:center;text-align:center;font:600 30px/1 "Cormorant Garamond",serif}
+.ring .pct small{display:block;font:600 9.5px Inter,sans-serif;color:var(--muted);letter-spacing:1.4px;text-transform:uppercase;margin-top:4px}
+.kv{display:flex;justify-content:space-between;padding:6px 0;font-size:14px;border-bottom:1px dashed var(--line)}
+.kv:last-child{border-bottom:0}
 .kv span{color:var(--muted)} .kv b{font-variant-numeric:tabular-nums}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.stat .n{font-size:22px;font-weight:600;font-variant-numeric:tabular-nums}
-.stat .l{font-size:12px;color:var(--muted)}
-.bar{height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:8px}
-.bar i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .4s}
-.bar.gold i{background:var(--gold)}
+.stat .n{font:600 26px/1.15 "Cormorant Garamond",serif;font-variant-numeric:tabular-nums;margin-top:2px}
+.stat .l{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;font-weight:600}
+.bar{height:6px;background:color-mix(in srgb,var(--gold) 14%,var(--line));border-radius:99px;overflow:hidden;margin-top:10px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent-2),var(--accent));border-radius:99px;transition:width .5s}
+.bar.gold i{background:var(--goldgrad)}
+.cd b,.stat .n,.ring .pct,h1,h2,.catHead h3{font-variant-numeric:lining-nums tabular-nums!important}
+.tip{margin-top:14px;text-align:center;font-size:13px;color:var(--muted);background:color-mix(in srgb,var(--gold-2) 18%,transparent);border-radius:12px;padding:9px}
 .list .row{display:flex;align-items:center;gap:10px;padding:12px 0;border-top:1px solid var(--line);cursor:pointer}
 .list .row:first-child{border-top:0}
 .row .main{flex:1;min-width:0}
@@ -64,19 +80,22 @@ h2{font-size:22px;margin:22px 0 10px}
 .pill.ok{background:color-mix(in srgb,var(--ok) 15%,transparent);color:var(--ok)}
 .pill.warn{background:color-mix(in srgb,var(--warn) 15%,transparent);color:var(--warn)}
 .catHead{display:flex;justify-content:space-between;align-items:baseline}
-.catHead h3{margin:0;font-size:15px}
+.catHead h3{margin:0;font:600 20px "Cormorant Garamond",serif}
 .chk{width:24px;height:24px;border-radius:8px;border:2px solid var(--line);flex:none;display:grid;place-items:center;cursor:pointer}
 .chk.on{background:var(--ok);border-color:var(--ok);color:#fff}
 .done .t{text-decoration:line-through;color:var(--muted)}
-.btn{appearance:none;border:0;border-radius:14px;padding:12px 16px;font:600 15px Inter,sans-serif;background:var(--accent);color:#fff;cursor:pointer;width:100%}
-.btn.ghost{background:var(--accent-soft);color:var(--accent)}
-.btn.danger{background:transparent;color:var(--warn);border:1px solid var(--line)}
-.iconbtn{appearance:none;border:0;background:var(--accent-soft);color:var(--accent);width:40px;height:40px;border-radius:12px;display:grid;place-items:center;cursor:pointer}
-.fab{position:fixed;right:max(16px,calc(50% - 264px));bottom:calc(96px + env(safe-area-inset-bottom));width:56px;height:56px;border-radius:18px;font-size:28px;line-height:1;box-shadow:0 8px 24px rgba(122,75,92,.35);z-index:5}
-nav{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom);z-index:10}
+.btn{appearance:none;border:0;border-radius:14px;padding:13px 16px;font:600 15px Inter,sans-serif;letter-spacing:.3px;background:linear-gradient(160deg,#7a2f4c,#4a1a2e);color:#fbeedd;cursor:pointer;width:100%;box-shadow:0 6px 18px -6px rgba(74,26,46,.55),inset 0 1px 0 rgba(255,255,255,.12)}
+.btn.ghost{background:var(--accent-soft);color:var(--accent);box-shadow:none}
+.btn.danger{background:transparent;color:var(--warn);border:1px solid var(--line);box-shadow:none}
+.btn.goldbtn{background:var(--goldgrad);color:#3a1222}
+.iconbtn{appearance:none;border:1px solid color-mix(in srgb,var(--gold) 35%,transparent);background:var(--card);color:var(--gold);width:42px;height:42px;border-radius:14px;display:grid;place-items:center;cursor:pointer;box-shadow:var(--shadow)}
+.iconbtn svg{width:20px;height:20px}
+.fab{position:fixed;right:max(16px,calc(50% - 264px));bottom:calc(96px + env(safe-area-inset-bottom));width:58px;height:58px;border-radius:50%;font-size:30px;font-weight:400;line-height:1;background:var(--goldgrad);color:#3a1222;box-shadow:0 10px 26px -6px rgba(156,115,56,.7),inset 0 1px 0 rgba(255,255,255,.5);z-index:5}
+nav{position:fixed;left:0;right:0;bottom:0;background:color-mix(in srgb,var(--card) 82%,transparent);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);border-top:1px solid color-mix(in srgb,var(--gold) 25%,var(--line));display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom);z-index:10}
 nav .in{display:flex;max-width:560px;width:100%}
 nav button{flex:1;appearance:none;border:0;background:none;color:var(--muted);padding:10px 0 8px;font:500 11px Inter,sans-serif;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer}
-nav button.on{color:var(--accent)}
+nav button.on{color:var(--accent);position:relative}
+nav button.on:before{content:"";position:absolute;top:0;width:28px;height:2px;border-radius:2px;background:var(--goldgrad)}
 nav svg{width:22px;height:22px}
 .empty{text-align:center;color:var(--muted);padding:20px 8px;font-size:14px}
 .seg{display:flex;background:var(--accent-soft);border-radius:12px;padding:3px;margin-bottom:12px}
@@ -156,7 +175,7 @@ function target(){const s=S.settings;if(!s.date)return null;return new Date(s.da
 /* ---------- views ---------- */
 function vHome(){
   const s=S.settings,T=totals(),tg=target();
-  const names=(s.n1||s.n2)?`${esc(s.n1||'…')} <span style="color:var(--gold)">&amp;</span> ${esc(s.n2||'…')}`:'Hari Bahagia Kita';
+  const names=(s.n1||s.n2)?`${esc(s.n1||'…')} <span style="font-size:.8em">&amp;</span> ${esc(s.n2||'…')}`:'Hari Bahagia Kita';
   let months=null; if(tg){months=Math.max(1,Math.ceil((tg-new Date())/(30.44*864e5)))}
   const perMonth=months?T.need/months:0;
   const done=S.tasks.filter(t=>t.done).length;
@@ -168,14 +187,17 @@ function vHome(){
   <div class="top"><div><div class="sub">Persediaan Perkahwinan</div><h1>Assalamualaikum</h1></div>
    <button class="iconbtn" id="gear" aria-label="Tetapan">${icon('gear')}</button></div>
   <div class="card hero">
-    <div class="names serif">${names}</div>
+    <div class="kicker">Walimatul Urus</div>
+    <div class="names script goldtxt">${names}</div>
+    <div class="orn">✦</div>
     <div class="sub">${tg?esc(tg.toLocaleDateString('ms-MY',{weekday:'long',day:'numeric',month:'long',year:'numeric'})):'Tetapkan tarikh majlis'}${s.venue?' · '+esc(s.venue):''}</div>
-    ${tg?`<div class="cd" id="cd"></div>`:`<div style="margin-top:14px"><button class="btn" id="setDate">Tetapkan tarikh</button></div>`}
+    ${tg?`<div class="cd" id="cd"></div>`:`<div style="margin-top:16px"><button class="btn goldbtn" id="setDate">Tetapkan tarikh</button></div>`}
   </div>
   <div class="card">
     <div class="ringrow">
-      <div class="ring"><svg width="118" height="118"><circle cx="59" cy="59" r="${r}" fill="none" stroke="var(--line)" stroke-width="10"/>
-        <circle cx="59" cy="59" r="${r}" fill="none" stroke="var(--accent)" stroke-width="10" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-T.pct/100)}" style="transition:stroke-dashoffset .6s"/></svg>
+      <div class="ring"><svg width="118" height="118"><defs><linearGradient id="gg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9c7338"/><stop offset=".5" stop-color="#ecd29e"/><stop offset="1" stop-color="#b48a4a"/></linearGradient></defs>
+        <circle cx="59" cy="59" r="${r}" fill="none" stroke="color-mix(in srgb,var(--gold) 14%,var(--line))" stroke-width="8"/>
+        <circle cx="59" cy="59" r="${r}" fill="none" stroke="url(#gg)" stroke-width="8" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-T.pct/100)}" style="transition:stroke-dashoffset .6s"/></svg>
         <div class="pct"><div>${Math.round(T.pct)}%<small>terkumpul</small></div></div></div>
       <div style="flex:1">
         <div class="kv"><span>Terkumpul</span><b style="color:var(--ok)">${rm(T.saved)}</b></div>
@@ -183,8 +205,8 @@ function vHome(){
         <div class="kv"><span>Baki perlu</span><b style="color:var(--warn)">${rm(T.need)}</b></div>
       </div>
     </div>
-    ${months&&T.need>0?`<div class="sub" style="margin-top:10px;text-align:center">Simpan <b style="color:var(--ink)">${rm(Math.ceil(perMonth))}</b> sebulan untuk ${months} bulan lagi</div>`:''}
-    ${T.est>0&&T.need===0?`<div class="sub" style="margin-top:10px;text-align:center;color:var(--ok)">Alhamdulillah, sasaran tercapai!</div>`:''}
+    ${months&&T.need>0?`<div class="tip">Simpan <b style="color:var(--ink)">${rm(Math.ceil(perMonth))}</b> sebulan untuk ${months} bulan lagi</div>`:''}
+    ${T.est>0&&T.need===0?`<div class="tip" style="color:var(--ok)">Alhamdulillah, sasaran tercapai!</div>`:''}
   </div>
   <div class="grid2">
     <div class="card stat"><div class="l">Sudah dibayar ke vendor</div><div class="n">${rm(T.paid)}</div><div class="bar gold"><i style="width:${T.est?T.paid/T.est*100:0}%"></i></div></div>
