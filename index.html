@@ -7,8 +7,8 @@
 <meta name="description" content="Rancang kos, simpanan, senarai semak dan tetamu untuk hari perkahwinan.">
 <meta name="theme-color" content="#4a1a2e">
 <link rel="manifest" href="manifest.json">
-<link rel="icon" href="icons/icon-192.png">
-<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="icon" href="icons/icon-192.png?v=7">
+<link rel="apple-touch-icon" href="icons/icon-180.png?v=7">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Kahwin">
@@ -321,7 +321,7 @@ function vHome(){
   const due=S.costs.filter(c=>c.due&&num(c.est)-num(c.paid)>0).sort((a,b)=>a.due.localeCompare(b.due)).slice(0,4);
   const r=50,C=2*Math.PI*r;
   return `
-  <div class="top"><div style="display:flex;gap:12px;align-items:center"><img src="icons/icon-192.png" alt="" class="logo"><div><div class="kick">Persediaan Perkahwinan</div><h1>Assalamualaikum</h1></div></div>
+  <div class="top"><div style="display:flex;gap:12px;align-items:center"><img src="icons/icon-192.png?v=7" alt="" class="logo"><div><div class="kick">Persediaan Perkahwinan</div><h1>Assalamualaikum</h1></div></div>
    <button class="iconbtn" id="gear" aria-label="Tetapan">${icon('gear')}</button></div>
   <div class="card hero ${s.photo?'photo':'themed'} ${!s.photo&&THEMES[themeIdx()].light?'light':''}" ${s.photo?heroBg():`style="--h-ink:${THEMES[themeIdx()].ink||'#fff'};--h-num:${THEMES[themeIdx()].num||'#fff'}"`}>
     <button class="glass" style="left:16px" data-cycle aria-label="Tukar reka bentuk">${icon('palette')}</button>

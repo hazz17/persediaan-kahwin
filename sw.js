@@ -1,5 +1,5 @@
-const CACHE = 'kahwin-v7';
-const ASSETS = ['./', './index.html', './manifest.json', './icons/icon-192.png', './icons/icon-512.png', './icons/icon-180.png', './icons/icon-maskable.png'];
+const CACHE = 'kahwin-v8';
+const ASSETS = ['./', './index.html', './manifest.json', './icons/icon-192.png?v=7', './icons/icon-512.png?v=7', './icons/icon-180.png?v=7', './icons/icon-maskable.png?v=7'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));
