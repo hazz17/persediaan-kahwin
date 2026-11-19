@@ -58,6 +58,23 @@ h2{font-size:24px;margin:26px 2px 10px}
 .hero{text-align:center;padding:34px 18px 20px;color:#f7ecdf;border:1px solid rgba(230,200,143,.35);overflow:hidden;background:var(--herograd);background-size:cover;background-position:center;min-height:300px}
 .hero:before{content:"";position:absolute;inset:8px;border:1px solid rgba(230,200,143,.3);border-radius:16px;pointer-events:none}
 .hero.photo{padding-top:150px}
+.hero.themed:before{display:none}
+.hero.light{color:var(--h-ink)}
+.hero.light .sub{color:var(--h-ink);opacity:.8}
+.hero.light .kicker{color:#a8803f}
+.hero.light .goldtxt{background:linear-gradient(135deg,#7a5a24,#c39a55 50%,#7a5a24);-webkit-background-clip:text;background-clip:text}
+.hero.light .names{text-shadow:none}
+.hero.light .orn{color:#b8914e}
+.hero.light .orn:before,.hero.light .orn:after{background:linear-gradient(90deg,transparent,#b8914e)}
+.hero.light .cd div{background:rgba(255,255,255,.62);border-color:rgba(168,128,63,.35)}
+.hero.light .cd b{background:none;color:var(--h-num)}
+.hero.light .cd span{color:var(--h-ink);opacity:.7}
+.hero.light .pillbtn{color:#6b4a20;background:rgba(255,255,255,.62);border-color:rgba(168,128,63,.45)}
+.themes{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px}
+.th{appearance:none;border:0;background:none;padding:0;cursor:pointer;text-align:center;font:500 10px/1.2 Inter,sans-serif;color:var(--muted)}
+.th i{display:block;aspect-ratio:3/4;border-radius:12px;background-size:cover;border:2px solid transparent;margin-bottom:5px;box-shadow:var(--shadow)}
+.th.on i{border-color:var(--gold);box-shadow:0 0 0 3px color-mix(in srgb,var(--gold-2) 45%,transparent)}
+.th.on{color:var(--accent);font-weight:600}
 .hero .sub{color:rgba(247,236,223,.8)}
 .hero .kicker{font-size:10.5px;letter-spacing:3.2px;text-transform:uppercase;color:var(--gold-2);font-weight:600}
 .hero .names{font-size:46px;margin:2px 0 0;line-height:1.15;text-shadow:0 2px 18px rgba(0,0,0,.25)}
@@ -211,6 +228,51 @@ const ICONS={
  img:'<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/>',
  gear:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>'
 };
+ICONS.palette='<path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.5-.8 1.5-1.5 0-.9-.7-1.2-.7-2 0-.8.7-1.5 1.5-1.5H17a4 4 0 0 0 4-4c0-5-4-9-9-9z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7" r="1"/><circle cx="14.5" cy="7" r="1"/>';
+
+/* ---------- 5 reka bentuk kad (SVG, ikut saiz) ---------- */
+const GOLD='<linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9c7338"/><stop offset=".5" stop-color="#f1dcae"/><stop offset="1" stop-color="#b48a4a"/></linearGradient>';
+function corners(w,h,u){
+  const c=`<path d="M${u*4} ${u*15} Q${u*4} ${u*4} ${u*15} ${u*4}"/><path d="M${u*6.5} ${u*11} Q${u*6.5} ${u*6.5} ${u*11} ${u*6.5}"/><circle cx="${u*8.2}" cy="${u*8.2}" r="${u*.8}" fill="#e6c88f" stroke="none"/>`;
+  return `<g stroke="#d8b77f" fill="none" stroke-width="${u*.3}">${[[1,1,0,0],[-1,1,w,0],[1,-1,0,h],[-1,-1,w,h]].map(([sx,sy,tx,ty])=>`<g transform="translate(${tx} ${ty}) scale(${sx} ${sy})">${c}</g>`).join('')}</g>`;
+}
+function flower(cx,cy,r,col){return `<g transform="translate(${cx} ${cy})">${[0,60,120,180,240,300].map(a=>`<ellipse cy="${-r*.55}" rx="${r*.42}" ry="${r*.6}" fill="${col}" opacity=".78" transform="rotate(${a})"/>`).join('')}<circle r="${r*.26}" fill="#c99a5b"/></g>`}
+function leaf(cx,cy,r,a){return `<ellipse cx="${cx}" cy="${cy}" rx="${r*.3}" ry="${r*.9}" fill="#9fb08f" opacity=".8" transform="rotate(${a} ${cx} ${cy})"/>`}
+function sprig(x,y,s,f){return `<g transform="translate(${x} ${y}) scale(${f*s} ${s})"><path d="M0 0 Q4 -12 2 -26" stroke="#6f8462" stroke-width=".6" fill="none"/>${[[1,-6,-35],[3,-11,30],[2,-16,-35],[3,-20,30],[2,-25,0]].map(([lx,ly,a])=>`<ellipse cx="${lx}" cy="${ly}" rx="1.6" ry="3.6" fill="#7d936f" transform="rotate(${a} ${lx} ${ly})"/>`).join('')}</g>`}
+const THEMES=[
+ {n:'Maroon Diraja',f:(w,h,u)=>`<defs><radialGradient id="r" cx=".5" cy="0" r="1"><stop offset="0" stop-color="#8a3a58"/><stop offset=".6" stop-color="#4a1a2e"/><stop offset="1" stop-color="#2a0c18"/></radialGradient></defs>
+   <rect width="${w}" height="${h}" fill="url(#r)"/><rect x="${u*2.5}" y="${u*2.5}" width="${w-u*5}" height="${h-u*5}" rx="${u*2}" fill="none" stroke="#e6c88f" stroke-opacity=".45" stroke-width="${u*.25}"/>${corners(w,h,u)}`},
+ {n:'Songket Emas',f:(w,h,u)=>`<defs><pattern id="p" width="${u*8}" height="${u*8}" patternUnits="userSpaceOnUse"><path d="M${u*4} 0L${u*8} ${u*4}L${u*4} ${u*8}L0 ${u*4}Z" fill="none" stroke="#d8b77f" stroke-width="${u*.18}" opacity=".55"/><path d="M${u*4} ${u*2.3}L${u*5.7} ${u*4}L${u*4} ${u*5.7}L${u*2.3} ${u*4}Z" fill="#d8b77f" opacity=".28"/></pattern>
+   <radialGradient id="v" cx=".5" cy=".5" r=".62"><stop offset="0" stop-color="#2a0a18" stop-opacity=".93"/><stop offset=".6" stop-color="#2a0a18" stop-opacity=".72"/><stop offset="1" stop-color="#2a0a18" stop-opacity=".05"/></radialGradient>
+   <linearGradient id="b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a1430"/><stop offset="1" stop-color="#1f0712"/></linearGradient></defs>
+   <rect width="${w}" height="${h}" fill="url(#b)"/><rect width="${w}" height="${h}" fill="url(#p)"/><rect width="${w}" height="${h}" fill="url(#v)"/>
+   ${[u*4.5,h-u*6].map(y=>`<rect y="${y}" width="${w}" height="${u*1.5}" fill="#c9a66b" opacity=".8"/><rect y="${y-u*1.1}" width="${w}" height="${u*.25}" fill="#c9a66b" opacity=".6"/><rect y="${y+u*2.35}" width="${w}" height="${u*.25}" fill="#c9a66b" opacity=".6"/>`).join('')}`},
+ {n:'Mawar Blush',light:1,ink:'#4a2a33',num:'#8a3a52',f:(w,h,u)=>{const cl=`${leaf(u*14,u*14,u*7,-40)}${leaf(u*22,u*7,u*6,60)}${leaf(u*7,u*24,u*6,10)}${flower(u*7,u*8,u*9,'#e7a9b0')}${flower(u*19,u*3,u*6,'#f2c9c6')}${flower(u*3,u*21,u*5.5,'#d98f9a')}`;
+   return `<defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fdf6f1"/><stop offset="1" stop-color="#f4e1dd"/></linearGradient><filter id="bl" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="${u*5}"/></filter></defs>
+   <rect width="${w}" height="${h}" fill="url(#bg)"/><circle cx="${w*.85}" cy="${h*.18}" r="${u*20}" fill="#f1c7c9" opacity=".55" filter="url(#bl)"/><circle cx="${w*.12}" cy="${h*.8}" r="${u*22}" fill="#f6d9c8" opacity=".6" filter="url(#bl)"/>
+   <rect x="${u*3}" y="${u*3}" width="${w-u*6}" height="${h-u*6}" rx="${u*2}" fill="none" stroke="#c9a66b" stroke-opacity=".6" stroke-width="${u*.25}"/>${cl}<g transform="rotate(180 ${w/2} ${h/2})">${cl}</g>`}},
+ {n:'Malam Berbintang',f:(w,h,u)=>{let sd=11;const rnd=()=>(sd=(sd*16807)%2147483647)/2147483647;
+   const L=w*.1,R=w*.9,top=u*10,T=top+Math.min(h*.14,(R-L)*.5),B=h-u*4,d=T-top,k=(R-L)*.18;
+   const arch=(i)=>`M${L+i} ${B} V${T} C${L+i} ${T-d*.55} ${w/2-k} ${top+i+d*.2} ${w/2} ${top+i} C${w/2+k} ${top+i+d*.2} ${R-i} ${T-d*.55} ${R-i} ${T} V${B}`;
+   return `<defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#22325a"/><stop offset=".55" stop-color="#14203d"/><stop offset="1" stop-color="#0a1022"/></linearGradient>
+   <radialGradient id="gl" cx=".5" cy=".35" r=".5"><stop offset="0" stop-color="#3b4f86" stop-opacity=".55"/><stop offset="1" stop-color="#3b4f86" stop-opacity="0"/></radialGradient>
+   <mask id="m"><rect width="${w}" height="${h}" fill="#fff"/><circle cx="${w/2+u*1.2}" cy="${u*4.8}" r="${u*2.3}" fill="#000"/></mask></defs>
+   <rect width="${w}" height="${h}" fill="url(#bg)"/><rect width="${w}" height="${h}" fill="url(#gl)"/>
+   ${Array.from({length:90},()=>`<circle cx="${rnd()*w}" cy="${rnd()*h}" r="${u*(.12+rnd()*.35)}" fill="#f1dcae" opacity="${.25+rnd()*.7}"/>`).join('')}
+   <circle cx="${w/2}" cy="${u*5.5}" r="${u*2.6}" fill="#e6c88f" mask="url(#m)"/>
+   <path d="${arch(0)}" fill="none" stroke="#d8b77f" stroke-opacity=".75" stroke-width="${u*.3}"/><path d="${arch(u*1.6)}" fill="none" stroke="#d8b77f" stroke-opacity=".35" stroke-width="${u*.2}"/>`}},
+ {n:'Sage Laman',light:1,ink:'#3f4a37',num:'#55684a',f:(w,h,u)=>{const L=w*.08,R=w*.92,rx=(R-L)/2,ry=Math.min(rx,h*.15),top=u*5,B=h-u*5,i=u*1.8,rx2=rx-i,ry2=ry*rx2/rx;
+   return `<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#93a483"/><stop offset="1" stop-color="#5f7253"/></linearGradient></defs>
+   <rect width="${w}" height="${h}" fill="url(#bg)"/>
+   <path d="M${L} ${B}V${top+ry}A${rx} ${ry} 0 0 1 ${R} ${top+ry}V${B}Z" fill="#f8f2e7"/>
+   <path d="M${L+i} ${B-i}V${top+i+ry2}A${rx2} ${ry2} 0 0 1 ${R-i} ${top+i+ry2}V${B-i}Z" fill="none" stroke="#b8914e" stroke-width="${u*.3}"/>
+   ${sprig(L+u*3,B-i,u*.9,1)}${sprig(R-u*3,B-i,u*.9,-1)}${sprig(L+u*7,B-i,u*.6,1)}${sprig(R-u*7,B-i,u*.6,-1)}`}}
+];
+const themeIdx=()=>{const t=S.settings.theme|0;return t>=0&&t<THEMES.length?t:0};
+function svgURI(i,w,h){w=Math.max(1,Math.round(w));h=Math.max(1,Math.round(h));const t=THEMES[i]||THEMES[0];
+  return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">${t.f(w,h,Math.min(w,h)/100)}</svg>`)}
+function paintHero(){const h=document.querySelector('.hero.themed');if(h)h.style.backgroundImage=`url("${svgURI(themeIdx(),h.offsetWidth,h.offsetHeight)}")`}
+let rzT;addEventListener('resize',()=>{clearTimeout(rzT);rzT=setTimeout(paintHero,150)});
 const icon=n=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICONS[n]}</svg>`;
 const TABS=[['home','Utama'],['cost','Kos'],['save','Simpanan'],['task','Semak'],['guest','Tetamu']];
 const ADD={cost:'Tambah kos',save:'Tambah',task:'Tambah',guest:'Tambah'};
@@ -241,7 +303,8 @@ function vHome(){
   return `
   <div class="top"><div><div class="kick">Persediaan Perkahwinan</div><h1>Assalamualaikum</h1></div>
    <button class="iconbtn" id="gear" aria-label="Tetapan">${icon('gear')}</button></div>
-  <div class="card hero ${s.photo?'photo':''}" ${heroBg()}>
+  <div class="card hero ${s.photo?'photo':'themed'} ${!s.photo&&THEMES[themeIdx()].light?'light':''}" ${s.photo?heroBg():`style="--h-ink:${THEMES[themeIdx()].ink||'#fff'};--h-num:${THEMES[themeIdx()].num||'#fff'}"`}>
+    ${s.photo?'':`<button class="glass" style="left:16px" data-cycle aria-label="Tukar reka bentuk">${icon('palette')}</button>`}
     <button class="glass" style="right:16px" data-photo aria-label="Tukar gambar">${icon('cam')}</button>
     <div class="kicker">Walimatul Urus</div>
     <div class="names script goldtxt">${names}</div>
@@ -335,7 +398,7 @@ function render(){
   renderNav();
   const v={home:vHome,cost:vCost,save:vSave,task:vTask,guest:vGuest}[tab]||vHome;
   document.getElementById('app').innerHTML=v();
-  clearInterval(cdTimer);if(tab==='home'){tick();cdTimer=setInterval(tick,1000)}
+  clearInterval(cdTimer);if(tab==='home'){tick();cdTimer=setInterval(tick,1000);paintHero()}
   badge();
 }
 
@@ -354,20 +417,25 @@ async function wallpaper(){
   try{await document.fonts.load('120px "Great Vibes"');await document.fonts.load('500 260px "Playfair Display"')}catch(e){}
   const W=1080,H=1920,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
   let g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,'#5a1f37');g.addColorStop(1,'#2a0c18');x.fillStyle=g;x.fillRect(0,0,W,H);
+  const th=THEMES[themeIdx()], light=!s.photo&&th.light;
+  if(!s.photo){const im=new Image();im.src=svgURI(themeIdx(),W,H);try{await im.decode();x.drawImage(im,0,0,W,H)}catch(e){}}
   if(s.photo){const im=new Image();im.src=s.photo;await im.decode().catch(()=>{});const k=Math.max(W/im.width,H/im.height);x.drawImage(im,(W-im.width*k)/2,(H-im.height*k)/2,im.width*k,im.height*k);
     g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'rgba(42,12,24,.15)');g.addColorStop(.42,'rgba(42,12,24,.45)');g.addColorStop(.7,'rgba(42,12,24,.92)');g.addColorStop(1,'rgba(30,8,16,.98)');x.fillStyle=g;x.fillRect(0,0,W,H)}
-  const gold=x.createLinearGradient(200,0,880,0);gold.addColorStop(0,'#a87d3e');gold.addColorStop(.5,'#f1dcae');gold.addColorStop(1,'#b48a4a');
-  x.strokeStyle='rgba(230,200,143,.45)';x.lineWidth=3;x.strokeRect(40,40,W-80,H-80);
-  x.textAlign='center';x.fillStyle='#e6c88f';
-  const base=1080;
+  const gold=x.createLinearGradient(200,0,880,0);
+  if(light){gold.addColorStop(0,'#7a5a24');gold.addColorStop(.5,'#c39a55');gold.addColorStop(1,'#7a5a24')}
+  else{gold.addColorStop(0,'#a87d3e');gold.addColorStop(.5,'#f1dcae');gold.addColorStop(1,'#b48a4a')}
+  if(s.photo){x.strokeStyle='rgba(230,200,143,.45)';x.lineWidth=3;x.strokeRect(40,40,W-80,H-80)}
+  x.textAlign='center';x.fillStyle=light?'#a8803f':'#e6c88f';
+  const base=s.photo?1080:640;
   x.font='600 30px Inter, sans-serif';x.letterSpacing='10px';x.fillText('WALIMATUL URUS',W/2,base);x.letterSpacing='0px';
   x.fillStyle=gold;x.font='130px "Great Vibes", cursive';
   const nm=(s.n1||s.n2)?`${s.n1||''} & ${s.n2||''}`:'Hari Bahagia Kita';
   let fs=130;while(x.measureText(nm).width>W-160&&fs>60){fs-=6;x.font=fs+'px "Great Vibes", cursive'}
   x.fillText(nm,W/2,base+150);
+  if(light)x.fillStyle=th.num;
   x.font='500 260px "Playfair Display", serif';x.fillText(String(L.D),W/2,base+460);
-  x.fillStyle='#f7ecdf';x.font='600 34px Inter, sans-serif';x.letterSpacing='12px';x.fillText('HARI LAGI',W/2,base+540);x.letterSpacing='0px';
-  x.fillStyle='rgba(247,236,223,.85)';x.font='500 36px Inter, sans-serif';
+  x.fillStyle=light?th.ink:'#f7ecdf';x.font='600 34px Inter, sans-serif';x.letterSpacing='12px';x.fillText('HARI LAGI',W/2,base+540);x.letterSpacing='0px';
+  x.fillStyle=light?th.ink:'rgba(247,236,223,.85)';x.font='500 36px Inter, sans-serif';
   x.fillText(target().toLocaleDateString('ms-MY',{weekday:'long',day:'numeric',month:'long',year:'numeric'}),W/2,base+640);
   if(s.venue)x.fillText(s.venue,W/2,base+690);
   const blob=await new Promise(r=>c.toBlob(r,'image/png'));
@@ -424,16 +492,19 @@ function formGuest(g={}){openForm('Jemputan',g.id?'Kemaskini Tetamu':'Tambah Tet
    {k:'phone',l:'No. telefon',t:'tel',p:'Pilihan'},{k:'status',l:'RSVP',t:'select',o:[['belum','Belum jawab'],['hadir','Hadir'],['tidak','Tidak hadir']],d:'belum'}]}],g,
   o=>upsert(S.guests,{...g,...o,id:g.id||uid(),pax:Math.max(1,Math.round(num(o.pax)))}),g.id&&(()=>S.guests=S.guests.filter(x=>x.id!==g.id)))}
 function formSettings(){
-  let pending=S.settings.photo||'';
+  let pending=S.settings.photo||'', pt=themeIdx();
   const thumb=()=>`<div class="thumb" id="thumb" ${pending?`style="background-image:url('${pending}')"`:''}>${pending?'':icon('cam')}</div>`;
   openForm('Tetapan','Butiran Majlis',[
    {title:'Pasangan',fields:[{k:'n1',l:'Pengantin lelaki',p:'cth: Ahmad'},{k:'n2',l:'Pengantin perempuan',p:'cth: Aisyah'}],
     html:`<label>Gambar pasangan</label><div class="photoPick">${thumb()}<div class="btns"><button type="button" class="btn line" id="pp">Pilih gambar</button><button type="button" class="btn danger" id="pr" style="padding:6px">Buang gambar</button></div></div>`},
+   {title:'Reka bentuk kad',fields:[],html:`<div class="themes">${THEMES.map((t,i)=>`<button type="button" class="th ${i===pt?'on':''}" data-th="${i}"><i></i><span>${t.n}</span></button>`).join('')}</div><div class="hint">Digunakan bila tiada gambar pasangan. Juga boleh tukar terus dengan butang palet di kad utama.</div>`},
    {title:'Majlis',fields:[[{k:'date',l:'Tarikh',t:'date'},{k:'time',l:'Masa',t:'time'}],{k:'venue',l:'Lokasi',p:'cth: Dewan Seri Melati'}]},
    {title:'Sandaran data',fields:[],html:`<div class="duo" style="margin-top:10px"><button type="button" class="btn line" id="exp">Eksport</button><button type="button" class="btn line" id="imp">Import</button></div>
     <input type="file" id="impf" accept="application/json" class="hidden"><div class="hint">Data disimpan dalam telefon ini sahaja. Eksport untuk sandaran atau pindah ke telefon pasangan.</div>`}],
-   S.settings,o=>{const old={...S.settings};S.settings={...S.settings,...o,photo:pending};if(!save()){S.settings=old}else toast('Tetapan disimpan')});
+   S.settings,o=>{const old={...S.settings};S.settings={...S.settings,...o,photo:pending,theme:pt};if(!save()){S.settings=old}else toast('Tetapan disimpan')});
   const upd=()=>{document.getElementById('thumb').outerHTML=thumb()};
+  document.querySelectorAll('.th').forEach(b=>{b.querySelector('i').style.backgroundImage=`url("${svgURI(+b.dataset.th,90,120)}")`;
+    b.onclick=()=>{pt=+b.dataset.th;document.querySelectorAll('.th').forEach(x=>x.classList.toggle('on',x===b))}});
   document.getElementById('pp').onclick=()=>pickPhoto(d=>{pending=d;upd()});
   document.getElementById('pr').onclick=()=>{pending='';upd()};
   document.getElementById('exp').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S)],{type:'application/json'}));a.download='persediaan-kahwin-'+today()+'.json';a.click()};
@@ -446,6 +517,7 @@ document.getElementById('app').onclick=e=>{
   const q=s=>e.target.closest(s);let el;
   if(q('#gear')||q('#setDate'))return formSettings();
   if(q('[data-photo]'))return pickPhoto(setPhoto);
+  if(q('[data-cycle]')){S.settings.theme=(themeIdx()+1)%THEMES.length;save();render();return toast(THEMES[themeIdx()].n)}
   if(q('#wall'))return wallpaper();
   if(q('[data-add]'))return ({cost:formCost,save:formSave,task:formTask,guest:formGuest}[tab]||(()=>{}))();
   if(el=q('[data-toggle]')){const t=S.tasks.find(x=>x.id===el.dataset.toggle);t.done=!t.done;save();render();return}
