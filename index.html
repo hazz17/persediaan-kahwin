@@ -129,7 +129,7 @@ h2{font-size:24px;margin:26px 2px 10px}
 .seg button{flex:1;border:0;background:none;padding:9px;border-radius:10px;font:500 13px Inter,sans-serif;color:var(--muted);cursor:pointer}
 .seg button.on{background:var(--herograd);color:var(--gold-2)}
 
-.btn{appearance:none;border:0;border-radius:15px;padding:14px 16px;font:600 15px Inter,sans-serif;letter-spacing:.3px;background:linear-gradient(160deg,#7a2f4c,#4a1a2e);color:#fbeedd;cursor:pointer;width:100%;box-shadow:0 8px 20px -8px rgba(74,26,46,.6),inset 0 1px 0 rgba(255,255,255,.12)}
+.btn{appearance:none;border:0;border-radius:15px;padding:14px 16px;font:600 15px Inter,sans-serif;letter-spacing:.3px;background:linear-gradient(160deg,var(--btn1,#7a2f4c),var(--btn2,#4a1a2e));color:#fbeedd;cursor:pointer;width:100%;box-shadow:0 8px 20px -8px rgba(74,26,46,.6),inset 0 1px 0 rgba(255,255,255,.12)}
 .btn.ghost{background:var(--accent-soft);color:var(--accent);box-shadow:none}
 .btn.line{background:transparent;color:var(--accent);border:1px solid color-mix(in srgb,var(--gold) 40%,var(--line));box-shadow:none}
 .btn.danger{background:transparent;color:var(--warn);box-shadow:none;font-weight:500;font-size:14px}
@@ -176,7 +176,7 @@ input:focus,select:focus{outline:0;border-color:var(--gold);box-shadow:0 0 0 4px
 .photoPick .btn{padding:10px;font-size:13.5px}
 .hint{font-size:12px;color:var(--muted);margin-top:8px}
 
-.toast{position:fixed;left:50%;bottom:calc(110px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--accent-2);color:var(--gold-2);border:1px solid rgba(230,200,143,.4);padding:10px 18px;border-radius:99px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:30;white-space:nowrap}
+.toast{position:fixed;left:50%;bottom:calc(110px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--btn2,#4a1a2e);color:var(--gold-2);border:1px solid rgba(230,200,143,.4);padding:10px 18px;border-radius:99px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:30;white-space:nowrap}
 .toast.show{opacity:1}
 .hidden{display:none!important}
 </style>
@@ -268,6 +268,25 @@ const THEMES=[
    <path d="M${L+i} ${B-i}V${top+i+ry2}A${rx2} ${ry2} 0 0 1 ${R-i} ${top+i+ry2}V${B-i}Z" fill="none" stroke="#b8914e" stroke-width="${u*.3}"/>
    ${sprig(L+u*3,B-i,u*.9,1)}${sprig(R-u*3,B-i,u*.9,-1)}${sprig(L+u*7,B-i,u*.6,1)}${sprig(R-u*7,B-i,u*.6,-1)}`}}
 ];
+/* warna app ikut kad: btn1/btn2 + hero sama untuk mod cerah & gelap, L/D ikut mod telefon */
+const PAL=[
+ {btn1:'#7a2f4c',btn2:'#4a1a2e',hero:'radial-gradient(120% 80% at 50% 0%,#8a3a58 0%,transparent 60%),linear-gradient(165deg,#5a1f37 0%,#3a1222 100%)',
+  L:{bg:'#f6efe6',card:'#fffcf7',line:'#eadfd2',accent:'#6b2742',soft:'#f5e9e8',field:'#fffdf9'},D:{bg:'#140d10',card:'#1f1519',line:'#3a2a2f',accent:'#e2b3c0',soft:'#33212a',field:'#191114'}},
+ {btn1:'#5e1d3e',btn2:'#2f0a1c',hero:'radial-gradient(120% 80% at 50% 0%,#6e2448 0%,transparent 60%),linear-gradient(165deg,#3f0f27 0%,#1f0712 100%)',
+  L:{bg:'#f4ece2',card:'#fffbf5',line:'#e7d9c7',accent:'#5a1838',soft:'#f1e4e6',field:'#fffdf8'},D:{bg:'#120a0e',card:'#1d1217',line:'#3a2830',accent:'#e0b2c6',soft:'#2f1b25',field:'#170e12'}},
+ {btn1:'#c06a82',btn2:'#8a3a55',hero:'radial-gradient(120% 80% at 50% 0%,#d98da0 0%,transparent 60%),linear-gradient(165deg,#b25c75 0%,#7e3450 100%)',
+  L:{bg:'#fbf2f0',card:'#fffafa',line:'#f0dcdc',accent:'#a24a62',soft:'#fbe7ec',field:'#fffdfd'},D:{bg:'#170e11',card:'#22161a',line:'#3e2a30',accent:'#f1b7c6',soft:'#3a2329',field:'#1b1114'}},
+ {btn1:'#2c3f6e',btn2:'#121d3a',hero:'radial-gradient(120% 80% at 50% 0%,#3b4f86 0%,transparent 60%),linear-gradient(165deg,#1d2b4f 0%,#0a1022 100%)',
+  L:{bg:'#f0f1f6',card:'#fdfdff',line:'#dde1ec',accent:'#22325a',soft:'#e5e9f4',field:'#ffffff'},D:{bg:'#0b0e17',card:'#141a28',line:'#27304a',accent:'#b9c6ee',soft:'#1e2740',field:'#10141f'}},
+ {btn1:'#6a7f5c',btn2:'#3f5035',hero:'radial-gradient(120% 80% at 50% 0%,#93a483 0%,transparent 60%),linear-gradient(165deg,#6f8462 0%,#43553a 100%)',
+  L:{bg:'#f3f2ea',card:'#fdfcf7',line:'#e0e2d3',accent:'#4f6244',soft:'#e8eedf',field:'#fffffb'},D:{bg:'#0e110c',card:'#181d15',line:'#2f3829',accent:'#c3d6b2',soft:'#253020',field:'#12160f'}}
+];
+const darkMQ=matchMedia('(prefers-color-scheme: dark)');
+function applyTheme(i=themeIdx()){const p=PAL[i]||PAL[0],m=darkMQ.matches?p.D:p.L,r=document.documentElement.style;
+  [['--bg',m.bg],['--card',m.card],['--line',m.line],['--accent',m.accent],['--accent-soft',m.soft],['--field',m.field],
+   ['--accent-2',p.btn2],['--btn1',p.btn1],['--btn2',p.btn2],['--herograd',p.hero]].forEach(([k,v])=>r.setProperty(k,v));
+  document.querySelector('meta[name=theme-color]').content=p.btn2}
+darkMQ.addEventListener?.('change',()=>applyTheme());
 const themeIdx=()=>{const t=S.settings.theme|0;return t>=0&&t<THEMES.length?t:0};
 function svgURI(i,w,h){w=Math.max(1,Math.round(w));h=Math.max(1,Math.round(h));const t=THEMES[i]||THEMES[0];
   return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">${t.f(w,h,Math.min(w,h)/100)}</svg>`)}
@@ -304,7 +323,7 @@ function vHome(){
   <div class="top"><div><div class="kick">Persediaan Perkahwinan</div><h1>Assalamualaikum</h1></div>
    <button class="iconbtn" id="gear" aria-label="Tetapan">${icon('gear')}</button></div>
   <div class="card hero ${s.photo?'photo':'themed'} ${!s.photo&&THEMES[themeIdx()].light?'light':''}" ${s.photo?heroBg():`style="--h-ink:${THEMES[themeIdx()].ink||'#fff'};--h-num:${THEMES[themeIdx()].num||'#fff'}"`}>
-    ${s.photo?'':`<button class="glass" style="left:16px" data-cycle aria-label="Tukar reka bentuk">${icon('palette')}</button>`}
+    <button class="glass" style="left:16px" data-cycle aria-label="Tukar reka bentuk">${icon('palette')}</button>
     <button class="glass" style="right:16px" data-photo aria-label="Tukar gambar">${icon('cam')}</button>
     <div class="kicker">Walimatul Urus</div>
     <div class="names script goldtxt">${names}</div>
@@ -395,7 +414,7 @@ function tick(){
 function badge(){const L=left();try{if(L&&navigator.setAppBadge)navigator.setAppBadge(L.D).catch(()=>{})}catch(e){}}
 
 function render(){
-  renderNav();
+  applyTheme();renderNav();
   const v={home:vHome,cost:vCost,save:vSave,task:vTask,guest:vGuest}[tab]||vHome;
   document.getElementById('app').innerHTML=v();
   clearInterval(cdTimer);if(tab==='home'){tick();cdTimer=setInterval(tick,1000);paintHero()}
@@ -469,7 +488,7 @@ function openForm(kick,title,groups,val,onSave,onDel,extraTop='',extraBottom='')
   document.getElementById('cancel').onclick=close;document.getElementById('cancel2').onclick=close;
   if(onDel)document.getElementById('del').onclick=()=>{if(confirm('Padam item ini?')){onDel();save();close();render();toast('Dipadam')}};
 }
-function close(){document.getElementById('mask').classList.remove('show');document.body.style.overflow=''}
+function close(){document.getElementById('mask').classList.remove('show');document.body.style.overflow='';applyTheme()}
 document.getElementById('mask').onclick=e=>{if(e.target.id==='mask')close()};
 addEventListener('keydown',e=>{if(e.key==='Escape')close()});
 
@@ -497,14 +516,14 @@ function formSettings(){
   openForm('Tetapan','Butiran Majlis',[
    {title:'Pasangan',fields:[{k:'n1',l:'Pengantin lelaki',p:'cth: Ahmad'},{k:'n2',l:'Pengantin perempuan',p:'cth: Aisyah'}],
     html:`<label>Gambar pasangan</label><div class="photoPick">${thumb()}<div class="btns"><button type="button" class="btn line" id="pp">Pilih gambar</button><button type="button" class="btn danger" id="pr" style="padding:6px">Buang gambar</button></div></div>`},
-   {title:'Reka bentuk kad',fields:[],html:`<div class="themes">${THEMES.map((t,i)=>`<button type="button" class="th ${i===pt?'on':''}" data-th="${i}"><i></i><span>${t.n}</span></button>`).join('')}</div><div class="hint">Digunakan bila tiada gambar pasangan. Juga boleh tukar terus dengan butang palet di kad utama.</div>`},
+   {title:'Reka bentuk kad',fields:[],html:`<div class="themes">${THEMES.map((t,i)=>`<button type="button" class="th ${i===pt?'on':''}" data-th="${i}"><i></i><span>${t.n}</span></button>`).join('')}</div><div class="hint">Warna seluruh app ikut reka bentuk ini. Corak kad digunakan bila tiada gambar pasangan. Boleh juga tukar terus dengan butang palet di kad utama.</div>`},
    {title:'Majlis',fields:[[{k:'date',l:'Tarikh',t:'date'},{k:'time',l:'Masa',t:'time'}],{k:'venue',l:'Lokasi',p:'cth: Dewan Seri Melati'}]},
    {title:'Sandaran data',fields:[],html:`<div class="duo" style="margin-top:10px"><button type="button" class="btn line" id="exp">Eksport</button><button type="button" class="btn line" id="imp">Import</button></div>
     <input type="file" id="impf" accept="application/json" class="hidden"><div class="hint">Data disimpan dalam telefon ini sahaja. Eksport untuk sandaran atau pindah ke telefon pasangan.</div>`}],
    S.settings,o=>{const old={...S.settings};S.settings={...S.settings,...o,photo:pending,theme:pt};if(!save()){S.settings=old}else toast('Tetapan disimpan')});
   const upd=()=>{document.getElementById('thumb').outerHTML=thumb()};
   document.querySelectorAll('.th').forEach(b=>{b.querySelector('i').style.backgroundImage=`url("${svgURI(+b.dataset.th,90,120)}")`;
-    b.onclick=()=>{pt=+b.dataset.th;document.querySelectorAll('.th').forEach(x=>x.classList.toggle('on',x===b))}});
+    b.onclick=()=>{pt=+b.dataset.th;applyTheme(pt);document.querySelectorAll('.th').forEach(x=>x.classList.toggle('on',x===b))}});
   document.getElementById('pp').onclick=()=>pickPhoto(d=>{pending=d;upd()});
   document.getElementById('pr').onclick=()=>{pending='';upd()};
   document.getElementById('exp').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S)],{type:'application/json'}));a.download='persediaan-kahwin-'+today()+'.json';a.click()};
