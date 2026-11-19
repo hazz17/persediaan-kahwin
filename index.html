@@ -13,7 +13,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Kahwin">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Great+Vibes&family=Playfair+Display:wght@500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Great+Vibes&family=Playfair+Display:wght@500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#f6efe6; --card:#fffcf7; --ink:#2a1a20; --muted:#8c7a7f; --line:#eadfd2;
@@ -85,7 +85,7 @@ h2{font-size:24px;margin:26px 2px 10px}
 .th.on{color:var(--accent);font-weight:600}
 .hero .sub{color:rgba(247,236,223,.8)}
 .hero .kicker{font-size:10.5px;letter-spacing:3.2px;text-transform:uppercase;color:var(--gold-2);font-weight:600}
-.hero .names{font-size:46px;margin:2px 0 0;line-height:1.15;text-shadow:0 2px 18px rgba(0,0,0,.25)}
+.hero .names{font:italic 600 40px/1.15 "Cormorant Garamond",Georgia,serif;letter-spacing:.3px;margin:6px 0 0;text-shadow:0 2px 18px rgba(0,0,0,.25);overflow-wrap:anywhere}
 .hero .glass{position:absolute;top:16px;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;cursor:pointer;z-index:2;
   border:1px solid rgba(230,200,143,.45);background:rgba(40,10,22,.35);color:var(--gold-2);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 .hero .glass svg{width:18px;height:18px}
@@ -336,7 +336,7 @@ function vHome(){
     <button class="glass" style="left:16px" data-cycle aria-label="Tukar reka bentuk">${icon('palette')}</button>
     <button class="glass" style="right:16px" data-photo aria-label="Tukar gambar">${icon('cam')}</button>
     <div class="kicker">Walimatul Urus</div>
-    <div class="names script goldtxt">${names}</div>
+    <div class="names goldtxt">${names}</div>
     <div class="orn">✦</div>
     <div class="sub">${tg?esc(tg.toLocaleDateString('ms-MY',{weekday:'long',day:'numeric',month:'long',year:'numeric'})):'Tetapkan tarikh majlis'}${s.venue?' · '+esc(s.venue):''}</div>
     ${tg?`<div class="cd" id="cd"></div><button class="pillbtn" id="wall">${icon('img')}Simpan kad countdown</button>`
@@ -443,7 +443,7 @@ function setPhoto(d){const old=S.settings.photo;S.settings.photo=d;if(!save()){S
 /* ---------- countdown wallpaper ---------- */
 async function wallpaper(){
   const L=left(),s=S.settings;if(!L)return;
-  try{await document.fonts.load('120px "Great Vibes"');await document.fonts.load('500 260px "Playfair Display"')}catch(e){}
+  try{await document.fonts.load('italic 600 120px "Cormorant Garamond"');await document.fonts.load('500 260px "Playfair Display"')}catch(e){}
   const W=1080,H=1920,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
   let g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,'#5a1f37');g.addColorStop(1,'#2a0c18');x.fillStyle=g;x.fillRect(0,0,W,H);
   const th=THEMES[themeIdx()], light=!s.photo&&th.light;
@@ -457,9 +457,9 @@ async function wallpaper(){
   x.textAlign='center';x.fillStyle=light?'#a8803f':'#e6c88f';
   const base=s.photo?1080:640;
   x.font='600 30px Inter, sans-serif';x.letterSpacing='10px';x.fillText('WALIMATUL URUS',W/2,base);x.letterSpacing='0px';
-  x.fillStyle=gold;x.font='130px "Great Vibes", cursive';
+  x.fillStyle=gold;x.font='italic 600 110px "Cormorant Garamond", serif';
   const nm=(s.n1||s.n2)?`${s.n1||''} & ${s.n2||''}`:'Hari Bahagia Kita';
-  let fs=130;while(x.measureText(nm).width>W-160&&fs>60){fs-=6;x.font=fs+'px "Great Vibes", cursive'}
+  let fs=110;while(x.measureText(nm).width>W-160&&fs>60){fs-=6;x.font='italic 600 '+fs+'px "Cormorant Garamond", serif'}
   x.fillText(nm,W/2,base+150);
   if(light)x.fillStyle=th.num;
   x.font='500 260px "Playfair Display", serif';x.fillText(String(L.D),W/2,base+460);
