@@ -1,4 +1,4 @@
-const CACHE = 'kahwin-v11';
+const CACHE = 'kahwin-v12';
 const ASSETS = ['./', './index.html', './manifest.json', './icons/icon-192.png?v=7', './icons/icon-512.png?v=7', './icons/icon-180.png?v=7', './icons/icon-maskable.png?v=7'];
 
 self.addEventListener('install', e => {

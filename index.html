@@ -136,6 +136,22 @@ h2{font-size:24px;margin:26px 2px 10px}
 .chips::-webkit-scrollbar{display:none}
 .chip{appearance:none;flex:none;white-space:nowrap;padding:9px 15px;border-radius:99px;border:1px solid color-mix(in srgb,var(--gold) 28%,var(--line));background:var(--card);color:var(--muted);font:500 13px Inter,sans-serif;cursor:pointer}
 .chip.on{background:var(--herograd);color:var(--gold-2);border-color:transparent}
+.evcard{cursor:pointer;padding:16px 18px 14px 24px;overflow:hidden;transition:transform .15s}
+.evcard:active{transform:scale(.985)}
+.evcard:before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--c)}
+.evtop{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.evname{font:600 23px/1.15 "Cormorant Garamond",serif;overflow-wrap:anywhere}
+.evamt{text-align:right;font:600 23px/1.1 "Cormorant Garamond",serif;font-variant-numeric:lining-nums tabular-nums;white-space:nowrap}
+.evamt small{display:block;font:500 11px Inter,sans-serif;color:var(--muted);margin-top:4px}
+.evfoot{display:flex;gap:14px;font-size:12.5px;color:var(--muted);margin-top:10px;align-items:center}
+.evfoot b{font-weight:600}
+.evfoot .go{margin-left:auto;color:var(--gold);font-weight:600}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;font-size:12px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}.legend .dot{width:9px;height:9px}
+.addcard{appearance:none;width:100%;padding:16px;border-radius:var(--radius);border:1.5px dashed color-mix(in srgb,var(--gold) 55%,var(--line));background:transparent;color:var(--gold);font:600 14px Inter,sans-serif;cursor:pointer;margin-bottom:12px}
+.top.col{flex-direction:column;align-items:flex-start;gap:12px}
+.evh{font-size:30px;line-height:1.1;overflow-wrap:anywhere}
+.back{appearance:none;border:0;background:none;color:var(--gold);font:600 13.5px Inter,sans-serif;padding:4px 0;margin:0 2px 2px;cursor:pointer}
 .chk{width:26px;height:26px;border-radius:9px;border:1.5px solid color-mix(in srgb,var(--gold) 50%,var(--line));flex:none;display:grid;place-items:center;cursor:pointer;font-size:14px}
 .chk.on{background:var(--goldgrad);border-color:transparent;color:#3a1222}
 .done .t{text-decoration:line-through;color:var(--muted)}
@@ -220,18 +236,17 @@ const DEFAULT_TASKS=[
  ['Bawa dokumen nikah & mas kahwin',5]
 ];
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
-const DEFAULT_EVENTS=[{id:'nikah',name:'Akad Nikah'},{id:'pr',name:'Majlis Pihak Perempuan'},{id:'lk',name:'Majlis Pihak Lelaki'}];
-function fix(s){if(!Array.isArray(s.events))s.events=DEFAULT_EVENTS.map(e=>({...e}));return s}
+function fix(s){if(!Array.isArray(s.events))s.events=[];return s}
 function load(){
   try{const s=JSON.parse(localStorage.getItem(KEY));if(s)return fix(s)}catch(e){}
   return fix({settings:{n1:'',n2:'',date:'',time:'10:00',venue:'',photo:''},costs:[],savings:[],guests:[],
     tasks:DEFAULT_TASKS.map(([t,w])=>({id:uid(),text:t,when:w,done:false}))});
 }
-let S=load(), tab='home', guestFilter='all', costFilter='all';
+let S=load(), tab='home', guestFilter='all', costView=null;
 const EV_COLORS=['#b48a4a','#8a3a58','#5f7a5a','#3b4f86','#c47a8f','#8a6a3a','#6b7f9a'];
-const evName=id=>(S.events.find(e=>e.id===id)||{}).name||'Umum / Bersama';
-const evList=()=>{const l=S.events.map((e,i)=>({id:e.id,name:e.name,col:EV_COLORS[i%EV_COLORS.length]}));
-  if(S.costs.some(c=>!c.ev||!S.events.find(e=>e.id===c.ev)))l.push({id:'',name:'Umum / Bersama',col:'#a89a8f'});return l};
+const evName=id=>(S.events.find(e=>e.id===id)||{}).name||'Tanpa majlis';
+const evList=()=>{const l=S.events.map((e,i)=>({...e,col:EV_COLORS[i%EV_COLORS.length]}));
+  if(S.costs.some(c=>!c.ev||!S.events.find(e=>e.id===c.ev)))l.push({id:'',name:'Tanpa majlis',col:'#a89a8f'});return l};
 const evOf=c=>S.events.find(e=>e.id===c.ev)?c.ev:'';
 try{tab=localStorage.getItem(KEY+'-tab')||'home'}catch(e){}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S));return true}catch(e){toast('Ruang simpanan penuh');return false}};
@@ -385,31 +400,44 @@ function vHome(){
 }
 function vCost(){
   const evs=evList();
-  if(costFilter!=='all'&&!evs.some(e=>e.id===costFilter))costFilter='all';
-  const items=costFilter==='all'?S.costs:S.costs.filter(c=>evOf(c)===costFilter);
-  const est=sum(items,c=>c.est),paid=sum(items,c=>c.paid),all=sum(S.costs,c=>c.est);
-  const groups=CATS.map(cat=>({cat,items:items.filter(c=>(c.cat||'Lain-lain')===cat)})).filter(g=>g.items.length);
+  if(costView!==null&&!evs.some(e=>e.id===costView))costView=null;
+  return costView===null?vCostList(evs):vCostDetail(evs.find(e=>e.id===costView));
+}
+function vCostList(evs){
+  const all=sum(S.costs,c=>c.est),paid=sum(S.costs,c=>c.paid);
   const br=evs.map(e=>{const it=S.costs.filter(c=>evOf(c)===e.id);return {...e,est:sum(it,c=>c.est),paid:sum(it,c=>c.paid),n:it.length}});
-  return head('Bajet','Kos Majlis',S.costs.length?ADD.cost:'')+`
-  ${S.costs.length?`<div class="card">
-   <div class="catHead"><h3>Pecahan ikut majlis</h3><button class="linkbtn" data-events>Urus majlis</button></div>
+  return `<div class="top"><div><div class="kick">Bajet</div><h1>Kos Majlis</h1></div>${evs.length?`<button class="addbtn" data-newev>${icon('plus')}Tambah majlis</button>`:''}</div>
+  ${evs.length?`<div class="card"><div class="stat"><div class="l">Jumlah semua majlis</div><div class="big">${rm(all)}</div></div>
    <div class="stack">${br.filter(b=>b.est>0).map(b=>`<i style="width:${all?b.est/all*100:0}%;background:${b.col}"></i>`).join('')}</div>
-   <div class="list">${br.map(b=>`<div class="row ev ${costFilter===b.id?'sel':''}" data-ev="${b.id}"><span class="dot" style="background:${b.col}"></span>
-     <div class="main"><div class="t">${esc(b.name)}</div><div class="s">${b.n} item · dibayar ${rm(b.paid)}</div></div>
-     <div class="amt">${rm(b.est)}<small>${all?Math.round(b.est/all*100):0}%</small></div></div>`).join('')}</div></div>
-  <div class="chips">${[{id:'all',name:'Semua majlis'},...evs].map(e=>`<button class="chip ${costFilter===e.id?'on':''}" data-ev="${e.id}">${esc(e.name)}</button>`).join('')}</div>`:''}
-  <div class="card"><div class="stat"><div class="l">${costFilter==='all'?'Jumlah anggaran semua majlis':'Jumlah · '+esc(evName(costFilter))}</div><div class="big">${rm(est)}</div></div>
+   <div class="legend">${br.filter(b=>b.est>0).map(b=>`<span><i class="dot" style="background:${b.col}"></i>${esc(b.name)} ${Math.round(b.est/all*100)}%</span>`).join('')}</div>
+   <div style="margin-top:8px"><div class="kv"><span>Sudah dibayar</span><b style="color:var(--ok)">${rm(paid)}</b></div>
+   <div class="kv"><span>Baki perlu dibayar</span><b style="color:var(--warn)">${rm(all-paid)}</b></div></div></div>
+  <h2>Senarai majlis</h2>
+  ${br.map(b=>`<div class="card evcard" data-open="${b.id}" style="--c:${b.col}">
+    <div class="evtop"><div style="min-width:0"><div class="evname">${esc(b.name)}</div><div class="sub">${[b.date?fmtDate(b.date):'',b.venue?esc(b.venue):'',b.n+' item'].filter(Boolean).join(' · ')}</div></div>
+     <div class="evamt">${rm(b.est)}<small>${all?Math.round(b.est/all*100):0}% daripada jumlah</small></div></div>
+    <div class="bar gold"><i style="width:${b.est?b.paid/b.est*100:0}%"></i></div>
+    <div class="evfoot"><span>Dibayar <b style="color:var(--ok)">${rm(b.paid)}</b></span><span>Baki <b style="color:var(--warn)">${rm(b.est-b.paid)}</b></span><span class="go">Lihat kos ›</span></div></div>`).join('')}
+  <button class="addcard" data-newev>+ Tambah majlis baru</button>`
+  :`<div class="card"><div class="empty"><span class="serif">Belum ada majlis</span>Tulis nama majlis anda sendiri, kemudian tambah kos dalam setiap majlis.<br><span style="font-size:12.5px">cth: Akad Nikah · Majlis Pihak Perempuan · Majlis Bertandang</span><br><button class="addbtn" data-newev>${icon('plus')}Tambah majlis pertama</button></div></div>`}`;
+}
+function vCostDetail(e){
+  const items=S.costs.filter(c=>evOf(c)===e.id),est=sum(items,c=>c.est),paid=sum(items,c=>c.paid);
+  const groups=CATS.map(cat=>({cat,items:items.filter(c=>(c.cat||'Lain-lain')===cat)})).filter(g=>g.items.length);
+  return `<button class="back" data-back>‹ Semua majlis</button>
+  <div class="top col"><div style="min-width:0"><div class="kick">${[e.date?fmtDate(e.date):'Majlis',e.venue?esc(e.venue):''].filter(Boolean).join(' · ')}</div><h1 class="evh">${esc(e.name)}</h1></div>
+   <button class="addbtn" data-add>${icon('plus')}Tambah kos</button></div>
+  <div class="card" style="--c:${e.col}"><div class="catHead"><div class="stat"><div class="l">Jumlah kos majlis ini</div><div class="big">${rm(est)}</div></div>${e.id?'<button class="linkbtn" data-editev>Edit majlis</button>':''}</div>
    <div class="bar gold"><i style="width:${est?paid/est*100:0}%"></i></div>
    <div style="margin-top:8px"><div class="kv"><span>Sudah dibayar</span><b style="color:var(--ok)">${rm(paid)}</b></div>
-   <div class="kv"><span>Baki bayaran vendor</span><b style="color:var(--warn)">${rm(est-paid)}</b></div></div></div>
-  ${!groups.length&&S.costs.length?`<div class="card empty">Tiada item kos untuk majlis ini lagi.<br><button class="addbtn" data-add>${icon('plus')}Tambah kos</button></div>`:''}
-  ${groups.length?groups.map(g=>{const e=sum(g.items,c=>c.est),p=sum(g.items,c=>c.paid);return `
-   <div class="card"><div class="catHead"><h3>${esc(g.cat)}</h3><span class="sub">${rm(e)}</span></div>
-   <div class="bar gold" style="margin-bottom:4px"><i style="width:${e?p/e*100:0}%"></i></div>
+   <div class="kv"><span>Baki perlu dibayar</span><b style="color:var(--warn)">${rm(est-paid)}</b></div></div></div>
+  ${groups.length?groups.map(g=>{const s=sum(g.items,c=>c.est),p=sum(g.items,c=>c.paid);return `
+   <div class="card"><div class="catHead"><h3>${esc(g.cat)}</h3><span class="sub">${rm(s)}</span></div>
+   <div class="bar gold" style="margin-bottom:4px"><i style="width:${s?p/s*100:0}%"></i></div>
    <div class="list">${g.items.map(c=>{const bal=num(c.est)-num(c.paid);return `<div class="row" data-cost="${c.id}"><div class="main"><div class="t">${esc(c.name)}</div>
-     <div class="s">${[costFilter==='all'?esc(evName(evOf(c))):'',esc(c.vendor||''),c.due?'Bayar sebelum '+fmtDate(c.due):''].filter(Boolean).join(' · ')}</div></div>
+     <div class="s">${[esc(c.vendor||''),c.due?'Bayar sebelum '+fmtDate(c.due):''].filter(Boolean).join(' · ')}</div></div>
      <div class="amt">${rm(c.est)}<small>${bal<=0?'<span class="pill ok">Selesai</span>':'Baki '+rm(bal)}</small></div></div>`}).join('')}</div></div>`}).join('')
-  :`<div class="card">${emptyBox('Belum ada item kos','Mulakan dengan item besar — dewan, katering, pelamin.','Tambah kos pertama')}</div>`}`;
+  :`<div class="card">${emptyBox('Belum ada kos','Tambah kos untuk majlis ini — cth: katering, pelamin, dewan.','Tambah kos pertama')}</div>`}`;
 }
 function vSave(){
   const T=totals(), list=[...S.savings].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
@@ -535,20 +563,19 @@ const upsert=(arr,item)=>{const i=arr.findIndex(x=>x.id===item.id);i<0?arr.push(
 
 function formCost(c={}){openForm('Bajet',c.id?'Kemaskini Kos':'Tambah Kos',[
   {title:'Butiran',fields:[{k:'name',l:'Nama item',req:1,p:'cth: Katering 500 pax'},
-    {k:'ev',l:'Untuk majlis',t:'select',o:[...S.events.map(e=>[e.id,e.name]),['','Umum / Bersama']],d:costFilter!=='all'?costFilter:(S.events[0]?.id||'')},
+    {k:'ev',l:'Untuk majlis',t:'select',o:[...S.events.map(e=>[e.id,e.name]),['','Tanpa majlis']],d:costView!==null?costView:(S.events[0]?.id||'')},
     {k:'cat',l:'Kategori',t:'select',o:CATS,d:'Lain-lain'}]},
   {title:'Bayaran',fields:[[{k:'est',l:'Kos anggaran',t:'money',req:1},{k:'paid',l:'Sudah dibayar',t:'money'}],{k:'due',l:'Tarikh akhir bayar',t:'date'}]},
   {title:'Vendor',fields:[{k:'vendor',l:'Nama vendor / kedai',p:'Pilihan'},{k:'phone',l:'No. telefon',t:'tel',p:'cth: 012-345 6789'}],
    html:c.phone?`<a class="btn line" style="display:block;text-align:center;text-decoration:none;margin-top:12px" href="https://wa.me/${esc(String(c.phone).replace(/\D/g,'').replace(/^0/,'60'))}" target="_blank" rel="noopener">WhatsApp vendor</a>`:''}],
   c.id?{...c,ev:evOf(c)}:c,o=>{upsert(S.costs,{...c,...o,id:c.id||uid(),est:num(o.est),paid:num(o.paid)});toast('Disimpan')},c.id&&(()=>S.costs=S.costs.filter(x=>x.id!==c.id)))}
-function formEvents(){
-  const val={};S.events.forEach(e=>val['e_'+e.id]=e.name);
-  openForm('Kos','Urus Majlis',[{fields:S.events.map((e,i)=>({k:'e_'+e.id,l:'Majlis '+(i+1),p:'Kosongkan untuk padam'})),
-    html:'<div class="hint">Tukar nama terus di sini. Kosongkan nama untuk padam majlis itu; kosnya akan dipindah ke "Umum / Bersama".</div>'},
-   {title:'Tambah majlis baru',fields:[{k:'new',l:'Nama majlis',p:'cth: Majlis Bertunang / Majlis Bertandang'}]}],val,o=>{
-    let gone=0;S.events=S.events.filter(e=>{const n=o['e_'+e.id];if(n){e.name=n;return true}gone++;S.costs.forEach(c=>{if(c.ev===e.id)c.ev=''});return false});
-    if(o.new)S.events.push({id:uid(),name:o.new});
-    toast(gone?gone+' majlis dipadam':'Senarai majlis disimpan')});
+function formEvent(e={}){
+  openForm('Kos',e.id?'Edit Majlis':'Majlis Baru',[{fields:[{k:'name',l:'Nama majlis',req:1,p:'cth: Majlis Bertandang Pihak Lelaki'},
+    [{k:'date',l:'Tarikh',t:'date'},{k:'venue',l:'Lokasi',p:'Pilihan'}]],
+    html:e.id?'<div class="hint">Jika majlis dipadam, kosnya dipindah ke "Tanpa majlis" — tiada kos yang hilang.</div>':''}],e,o=>{
+    if(e.id){Object.assign(e,o);toast('Majlis dikemas kini')}
+    else{const n={id:uid(),...o};S.events.push(n);costView=n.id;toast('Majlis ditambah — sekarang tambah kos')}
+  },e.id&&(()=>{S.events=S.events.filter(x=>x.id!==e.id);S.costs.forEach(c=>{if(c.ev===e.id)c.ev=''});costView=null}));
 }
 function formSave(s={}){openForm('Tabung',s.id?'Kemaskini Simpanan':'Rekod Simpanan',[
   {fields:[{k:'amt',l:'Jumlah',t:'money',req:1},{k:'date',l:'Tarikh',t:'date',d:today()},{k:'note',l:'Catatan',p:'cth: Gaji Disember / Duit ASB'},{k:'who',l:'Daripada',p:'cth: Saya / Tunang / Mak ayah'}]}],s,
@@ -588,6 +615,10 @@ document.getElementById('app').onclick=e=>{
   if(q('[data-photo]'))return pickPhoto(setPhoto);
   if(q('[data-cycle]')){S.settings.theme=(themeIdx()+1)%THEMES.length;save();render();return toast(THEMES[themeIdx()].n)}
   if(q('#wall'))return wallpaper();
+  if(el=q('[data-open]')){costView=el.dataset.open;render();return scrollTo(0,0)}
+  if(q('[data-back]')){costView=null;render();return scrollTo(0,0)}
+  if(q('[data-newev]'))return formEvent();
+  if(q('[data-editev]'))return formEvent(S.events.find(e=>e.id===costView));
   if(q('[data-add]'))return ({cost:formCost,save:formSave,task:formTask,guest:formGuest}[tab]||(()=>{}))();
   if(el=q('[data-toggle]')){const t=S.tasks.find(x=>x.id===el.dataset.toggle);t.done=!t.done;save();render();return}
   if(el=q('[data-cost]'))return formCost(S.costs.find(x=>x.id===el.dataset.cost));
@@ -595,8 +626,6 @@ document.getElementById('app').onclick=e=>{
   if(el=q('[data-task]'))return formTask(S.tasks.find(x=>x.id===el.dataset.task));
   if(el=q('[data-guest]'))return formGuest(S.guests.find(x=>x.id===el.dataset.guest));
   if(el=q('#gseg button')){guestFilter=el.dataset.f;render()}
-  if(q('[data-events]'))return formEvents();
-  if(el=q('[data-ev]')){const id=el.dataset.ev;costFilter=(el.classList.contains('ev')&&costFilter===id)?'all':id;render()}
 };
 
 render();
