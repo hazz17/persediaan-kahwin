@@ -10,118 +10,166 @@
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Kahwin">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Great+Vibes&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Great+Vibes&family=Playfair+Display:wght@500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#f6efe6; --card:#fffcf7; --ink:#2a1a20; --muted:#8c7a7f; --line:#eadfd2;
-  --accent:#6b2742; --accent-2:#4a1a2e; --accent-soft:#f3e6e6; --gold:#b48a4a; --gold-2:#e6c88f;
+  --accent:#6b2742; --accent-2:#4a1a2e; --accent-soft:#f5e9e8; --gold:#a8803f; --gold-2:#e6c88f;
   --goldgrad:linear-gradient(135deg,#9c7338 0%,#e9cf98 45%,#b48a4a 70%,#f1dcae 100%);
-  --ok:#4c7a58; --warn:#b0563a;
-  --radius:20px; --shadow:0 1px 1px rgba(74,26,46,.04),0 10px 30px -8px rgba(74,26,46,.14);
+  --herograd:radial-gradient(120% 80% at 50% 0%,#8a3a58 0%,transparent 60%),linear-gradient(165deg,#5a1f37 0%,#3a1222 100%);
+  --ok:#4c7a58; --warn:#b0563a; --field:#fffdf9;
+  --radius:22px; --shadow:0 1px 1px rgba(74,26,46,.04),0 12px 32px -12px rgba(74,26,46,.18);
 }
 @media (prefers-color-scheme: dark){
-  :root{--bg:#140d10;--card:#1f1519;--ink:#f5ece4;--muted:#a8969a;--line:#3a2a2f;
+  :root{--bg:#140d10;--card:#1f1519;--ink:#f5ece4;--muted:#a8969a;--line:#3a2a2f;--field:#191114;
     --accent:#e2b3c0;--accent-2:#2a141d;--accent-soft:#33212a;--gold:#d8b77f;--gold-2:#f0d9a8;--ok:#8cc29b;--warn:#e89a7a;
-    --shadow:0 10px 30px -10px rgba(0,0,0,.6)}
+    --shadow:0 12px 32px -12px rgba(0,0,0,.7)}
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 Inter,system-ui,sans-serif}
-body{background:radial-gradient(1200px 500px at 50% -200px,color-mix(in srgb,var(--gold-2) 35%,transparent),transparent 70%),var(--bg);background-attachment:fixed}
+html,body{margin:0;color:var(--ink);font:15px/1.45 Inter,system-ui,sans-serif}
+body{background:radial-gradient(1200px 520px at 50% -220px,color-mix(in srgb,var(--gold-2) 38%,transparent),transparent 70%),var(--bg);background-attachment:fixed;
+  padding-bottom:calc(104px + env(safe-area-inset-bottom));min-height:100vh}
+.wrap{max-width:560px;margin:0 auto;padding:calc(14px + env(safe-area-inset-top)) 16px 24px}
+h1,h2,.serif{font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;letter-spacing:.2px}
+h1{font-size:36px;margin:0;line-height:1.05}
+h2{font-size:24px;margin:26px 2px 10px}
 .script{font-family:"Great Vibes",cursive;font-weight:400}
 .goldtxt{background:var(--goldgrad);-webkit-background-clip:text;background-clip:text;color:transparent}
-.orn{display:flex;align-items:center;justify-content:center;gap:10px;color:var(--gold-2);margin:6px auto}
+.orn{display:flex;align-items:center;justify-content:center;gap:10px;color:var(--gold-2);margin:6px auto;font-size:12px}
 .orn:before,.orn:after{content:"";height:1px;width:56px;background:linear-gradient(90deg,transparent,var(--gold-2))}
 .orn:after{transform:scaleX(-1)}
-body{padding-bottom:calc(84px + env(safe-area-inset-bottom))}
-.wrap{max-width:560px;margin:0 auto;padding:16px 16px 24px}
-h1,h2,.serif{font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;letter-spacing:.2px}
-h1{font-size:34px;margin:0;line-height:1.05}
-h2{font-size:24px;margin:24px 0 10px}
-.top{display:flex;align-items:center;justify-content:space-between;padding-top:env(safe-area-inset-top);margin:4px 0 14px}
-.top .sub{text-transform:uppercase;letter-spacing:2.4px;font-size:10.5px;color:var(--gold);font-weight:600}
+.cd b,.stat .n,.ring .pct,h1,h2,.catHead h3,.big{font-variant-numeric:lining-nums tabular-nums!important}
+
+/* header */
+.top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:4px 2px 16px}
+.kick{text-transform:uppercase;letter-spacing:2.6px;font-size:10.5px;color:var(--gold);font-weight:600;margin-bottom:2px}
 .sub{color:var(--muted);font-size:13px}
-.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid color-mix(in srgb,var(--gold) 22%,var(--line));padding:18px;margin-bottom:12px;position:relative}
-.hero{text-align:center;padding:30px 18px 22px;color:#f7ecdf;border:1px solid rgba(230,200,143,.35);overflow:hidden;
-  background:radial-gradient(120% 80% at 50% 0%,#8a3a58 0%,transparent 60%),linear-gradient(165deg,#5a1f37 0%,#3a1222 100%)}
-.hero:before{content:"";position:absolute;inset:8px;border:1px solid rgba(230,200,143,.28);border-radius:14px;pointer-events:none}
-.hero .sub{color:rgba(247,236,223,.75)}
-.hero .kicker{font-size:10.5px;letter-spacing:3px;text-transform:uppercase;color:var(--gold-2);font-weight:600}
-.names{font-size:44px;margin:4px 0 2px;line-height:1.15}
-.cd{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:18px 0 4px}
-.cd div{background:rgba(255,255,255,.06);border:1px solid rgba(230,200,143,.3);border-radius:14px;padding:12px 0 9px;backdrop-filter:blur(6px)}
-.cd b{display:block;font:600 30px/1 "Cormorant Garamond",serif;font-variant-numeric:tabular-nums;background:var(--goldgrad);-webkit-background-clip:text;background-clip:text;color:transparent}
-.cd span{font-size:9.5px;color:rgba(247,236,223,.7);text-transform:uppercase;letter-spacing:1.6px}
-.ringrow{display:flex;gap:16px;align-items:center}
+.addbtn{appearance:none;border:0;cursor:pointer;flex:none;display:inline-flex;align-items:center;gap:6px;padding:10px 16px 10px 12px;border-radius:99px;
+  font:600 14px Inter,sans-serif;color:#3a1222;background:var(--goldgrad);box-shadow:0 8px 20px -8px rgba(156,115,56,.8),inset 0 1px 0 rgba(255,255,255,.55)}
+.addbtn svg{width:18px;height:18px}
+.iconbtn{appearance:none;border:1px solid color-mix(in srgb,var(--gold) 35%,transparent);background:var(--card);color:var(--gold);width:44px;height:44px;border-radius:15px;display:grid;place-items:center;cursor:pointer;box-shadow:var(--shadow);flex:none}
+.iconbtn svg{width:20px;height:20px}
+
+/* cards */
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid color-mix(in srgb,var(--gold) 20%,var(--line));padding:18px;margin-bottom:12px;position:relative}
+.hero{text-align:center;padding:34px 18px 20px;color:#f7ecdf;border:1px solid rgba(230,200,143,.35);overflow:hidden;background:var(--herograd);background-size:cover;background-position:center;min-height:300px}
+.hero:before{content:"";position:absolute;inset:8px;border:1px solid rgba(230,200,143,.3);border-radius:16px;pointer-events:none}
+.hero.photo{padding-top:150px}
+.hero .sub{color:rgba(247,236,223,.8)}
+.hero .kicker{font-size:10.5px;letter-spacing:3.2px;text-transform:uppercase;color:var(--gold-2);font-weight:600}
+.hero .names{font-size:46px;margin:2px 0 0;line-height:1.15;text-shadow:0 2px 18px rgba(0,0,0,.25)}
+.hero .glass{position:absolute;top:16px;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;cursor:pointer;z-index:2;
+  border:1px solid rgba(230,200,143,.45);background:rgba(40,10,22,.35);color:var(--gold-2);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.hero .glass svg{width:18px;height:18px}
+.cd{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:18px 0 14px}
+.cd div{background:rgba(255,255,255,.07);border:1px solid rgba(230,200,143,.3);border-radius:15px;padding:12px 0 9px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.cd b{display:block;font:600 32px/1 "Cormorant Garamond",serif;background:var(--goldgrad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.cd span{font-size:9.5px;color:rgba(247,236,223,.75);text-transform:uppercase;letter-spacing:1.6px}
+.pillbtn{appearance:none;cursor:pointer;display:inline-flex;align-items:center;gap:7px;padding:9px 16px;border-radius:99px;font:600 12.5px Inter,sans-serif;letter-spacing:.3px;
+  color:var(--gold-2);background:rgba(255,255,255,.07);border:1px solid rgba(230,200,143,.45);backdrop-filter:blur(8px)}
+.pillbtn svg{width:15px;height:15px}
+
+.ringrow{display:flex;gap:18px;align-items:center}
 .ring{width:118px;height:118px;flex:none;position:relative}
 .ring svg{transform:rotate(-90deg)}
-.ring .pct{position:absolute;inset:0;display:grid;place-items:center;text-align:center;font:600 30px/1 "Cormorant Garamond",serif}
+.ring .pct{position:absolute;inset:0;display:grid;place-items:center;text-align:center;font:600 32px/1 "Cormorant Garamond",serif}
 .ring .pct small{display:block;font:600 9.5px Inter,sans-serif;color:var(--muted);letter-spacing:1.4px;text-transform:uppercase;margin-top:4px}
-.kv{display:flex;justify-content:space-between;padding:6px 0;font-size:14px;border-bottom:1px dashed var(--line)}
+.kv{display:flex;justify-content:space-between;padding:7px 0;font-size:14px;border-bottom:1px dashed var(--line)}
 .kv:last-child{border-bottom:0}
 .kv span{color:var(--muted)} .kv b{font-variant-numeric:tabular-nums}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.stat .n{font:600 26px/1.15 "Cormorant Garamond",serif;font-variant-numeric:tabular-nums;margin-top:2px}
+.stat .n{font:600 27px/1.15 "Cormorant Garamond",serif;margin-top:3px}
 .stat .l{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;font-weight:600}
 .bar{height:6px;background:color-mix(in srgb,var(--gold) 14%,var(--line));border-radius:99px;overflow:hidden;margin-top:10px}
 .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent-2),var(--accent));border-radius:99px;transition:width .5s}
 .bar.gold i{background:var(--goldgrad)}
-.cd b,.stat .n,.ring .pct,h1,h2,.catHead h3{font-variant-numeric:lining-nums tabular-nums!important}
-.tip{margin-top:14px;text-align:center;font-size:13px;color:var(--muted);background:color-mix(in srgb,var(--gold-2) 18%,transparent);border-radius:12px;padding:9px}
-.list .row{display:flex;align-items:center;gap:10px;padding:12px 0;border-top:1px solid var(--line);cursor:pointer}
+.tip{margin-top:14px;text-align:center;font-size:13px;color:var(--muted);background:color-mix(in srgb,var(--gold-2) 20%,transparent);border-radius:12px;padding:10px}
+.big{font:600 40px/1.05 "Cormorant Garamond",serif}
+
+.list .row{display:flex;align-items:center;gap:12px;padding:13px 0;border-top:1px solid var(--line);cursor:pointer}
 .list .row:first-child{border-top:0}
 .row .main{flex:1;min-width:0}
 .row .t{font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .row .s{font-size:12px;color:var(--muted)}
 .row .amt{text-align:right;font-variant-numeric:tabular-nums;font-weight:600;font-size:14px}
-.row .amt small{display:block;font-weight:400;color:var(--muted);font-size:11px}
-.pill{display:inline-block;font-size:11px;padding:2px 8px;border-radius:99px;background:var(--accent-soft);color:var(--accent);font-weight:500}
+.row .amt small{display:block;font-weight:400;color:var(--muted);font-size:11px;margin-top:2px}
+.av{width:38px;height:38px;border-radius:12px;flex:none;display:grid;place-items:center;font:600 16px "Cormorant Garamond",serif;color:var(--accent);background:var(--accent-soft)}
+.pill{display:inline-block;font-size:11px;padding:2px 9px;border-radius:99px;background:var(--accent-soft);color:var(--accent);font-weight:500}
 .pill.ok{background:color-mix(in srgb,var(--ok) 15%,transparent);color:var(--ok)}
 .pill.warn{background:color-mix(in srgb,var(--warn) 15%,transparent);color:var(--warn)}
 .catHead{display:flex;justify-content:space-between;align-items:baseline}
-.catHead h3{margin:0;font:600 20px "Cormorant Garamond",serif}
-.chk{width:24px;height:24px;border-radius:8px;border:2px solid var(--line);flex:none;display:grid;place-items:center;cursor:pointer}
-.chk.on{background:var(--ok);border-color:var(--ok);color:#fff}
+.catHead h3{margin:0;font:600 21px "Cormorant Garamond",serif}
+.chk{width:26px;height:26px;border-radius:9px;border:1.5px solid color-mix(in srgb,var(--gold) 50%,var(--line));flex:none;display:grid;place-items:center;cursor:pointer;font-size:14px}
+.chk.on{background:var(--goldgrad);border-color:transparent;color:#3a1222}
 .done .t{text-decoration:line-through;color:var(--muted)}
-.btn{appearance:none;border:0;border-radius:14px;padding:13px 16px;font:600 15px Inter,sans-serif;letter-spacing:.3px;background:linear-gradient(160deg,#7a2f4c,#4a1a2e);color:#fbeedd;cursor:pointer;width:100%;box-shadow:0 6px 18px -6px rgba(74,26,46,.55),inset 0 1px 0 rgba(255,255,255,.12)}
+.empty{text-align:center;color:var(--muted);padding:26px 12px;font-size:14px}
+.empty .serif{font-size:22px;color:var(--ink);display:block;margin-bottom:4px}
+.empty .addbtn{margin-top:14px}
+.seg{display:flex;background:var(--card);border:1px solid color-mix(in srgb,var(--gold) 20%,var(--line));border-radius:14px;padding:4px;margin-bottom:12px}
+.seg button{flex:1;border:0;background:none;padding:9px;border-radius:10px;font:500 13px Inter,sans-serif;color:var(--muted);cursor:pointer}
+.seg button.on{background:var(--herograd);color:var(--gold-2)}
+
+.btn{appearance:none;border:0;border-radius:15px;padding:14px 16px;font:600 15px Inter,sans-serif;letter-spacing:.3px;background:linear-gradient(160deg,#7a2f4c,#4a1a2e);color:#fbeedd;cursor:pointer;width:100%;box-shadow:0 8px 20px -8px rgba(74,26,46,.6),inset 0 1px 0 rgba(255,255,255,.12)}
 .btn.ghost{background:var(--accent-soft);color:var(--accent);box-shadow:none}
-.btn.danger{background:transparent;color:var(--warn);border:1px solid var(--line);box-shadow:none}
-.btn.goldbtn{background:var(--goldgrad);color:#3a1222}
-.iconbtn{appearance:none;border:1px solid color-mix(in srgb,var(--gold) 35%,transparent);background:var(--card);color:var(--gold);width:42px;height:42px;border-radius:14px;display:grid;place-items:center;cursor:pointer;box-shadow:var(--shadow)}
-.iconbtn svg{width:20px;height:20px}
-.fab{position:fixed;right:max(16px,calc(50% - 264px));bottom:calc(96px + env(safe-area-inset-bottom));width:58px;height:58px;border-radius:50%;font-size:30px;font-weight:400;line-height:1;background:var(--goldgrad);color:#3a1222;box-shadow:0 10px 26px -6px rgba(156,115,56,.7),inset 0 1px 0 rgba(255,255,255,.5);z-index:5}
-nav{position:fixed;left:0;right:0;bottom:0;background:color-mix(in srgb,var(--card) 82%,transparent);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);border-top:1px solid color-mix(in srgb,var(--gold) 25%,var(--line));display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom);z-index:10}
-nav .in{display:flex;max-width:560px;width:100%}
-nav button{flex:1;appearance:none;border:0;background:none;color:var(--muted);padding:10px 0 8px;font:500 11px Inter,sans-serif;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer}
-nav button.on{color:var(--accent);position:relative}
-nav button.on:before{content:"";position:absolute;top:0;width:28px;height:2px;border-radius:2px;background:var(--goldgrad)}
-nav svg{width:22px;height:22px}
-.empty{text-align:center;color:var(--muted);padding:20px 8px;font-size:14px}
-.seg{display:flex;background:var(--accent-soft);border-radius:12px;padding:3px;margin-bottom:12px}
-.seg button{flex:1;border:0;background:none;padding:8px;border-radius:10px;font:500 13px Inter,sans-serif;color:var(--accent);cursor:pointer}
-.seg button.on{background:var(--card);box-shadow:var(--shadow)}
+.btn.line{background:transparent;color:var(--accent);border:1px solid color-mix(in srgb,var(--gold) 40%,var(--line));box-shadow:none}
+.btn.danger{background:transparent;color:var(--warn);box-shadow:none;font-weight:500;font-size:14px}
+
+/* floating nav */
+nav{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));max-width:536px;margin:0 auto;z-index:10;border-radius:24px;
+  background:color-mix(in srgb,var(--card) 80%,transparent);backdrop-filter:blur(18px) saturate(1.5);-webkit-backdrop-filter:blur(18px) saturate(1.5);
+  border:1px solid color-mix(in srgb,var(--gold) 28%,var(--line));box-shadow:0 14px 40px -12px rgba(74,26,46,.35);display:flex;padding:6px}
+nav button{flex:1;appearance:none;border:0;background:none;color:var(--muted);padding:6px 0 5px;font:500 10.5px Inter,sans-serif;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;border-radius:16px}
+nav .ic{width:46px;height:28px;border-radius:99px;display:grid;place-items:center;transition:background .2s}
+nav svg{width:21px;height:21px}
+nav button.on{color:var(--accent);font-weight:600}
+nav button.on .ic{background:var(--herograd);color:var(--gold-2)}
+
 /* sheet */
-.mask{position:fixed;inset:0;background:rgba(20,10,15,.45);display:none;z-index:20;align-items:flex-end;justify-content:center}
+.mask{position:fixed;inset:0;background:rgba(40,10,22,.5);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:none;z-index:20;align-items:flex-end;justify-content:center}
 .mask.show{display:flex}
-.sheet{background:var(--bg);width:100%;max-width:560px;border-radius:22px 22px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom));max-height:92vh;overflow:auto;animation:up .22s ease}
-@keyframes up{from{transform:translateY(40px);opacity:0}}
-.sheet h2{margin:0 0 12px}
-label{display:block;font-size:12px;color:var(--muted);margin:10px 0 4px;font-weight:500}
-input,select,textarea{width:100%;font:15px Inter,sans-serif;padding:11px 12px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
-input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:-1px}
-.actions{display:grid;gap:8px;margin-top:16px}
-.toast{position:fixed;left:50%;bottom:calc(100px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:30}
+.sheet{background:var(--bg);width:100%;max-width:520px;border-radius:28px 28px 0 0;max-height:92vh;display:flex;flex-direction:column;overflow:hidden;animation:up .25s cubic-bezier(.2,.8,.2,1);box-shadow:0 -10px 40px rgba(0,0,0,.25)}
+@media (min-width:640px){.mask{align-items:center}.sheet{border-radius:28px;max-height:88vh}}
+@keyframes up{from{transform:translateY(60px);opacity:0}}
+.sheet form{display:flex;flex-direction:column;min-height:0;flex:1}
+.sh-head{background:var(--herograd);color:#f7ecdf;padding:22px 20px 20px;position:relative;text-align:center;flex:none}
+.sh-head:before{content:"";position:absolute;top:8px;left:50%;width:40px;height:4px;margin-left:-20px;border-radius:4px;background:rgba(230,200,143,.4)}
+.sh-head .kicker{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold-2);font-weight:600}
+.sh-head h2{margin:2px 0 0;font-size:28px;color:#fbeedd}
+.sh-x{position:absolute;right:14px;top:16px;width:34px;height:34px;border-radius:50%;border:1px solid rgba(230,200,143,.4);background:rgba(255,255,255,.06);color:var(--gold-2);font-size:18px;cursor:pointer;line-height:1}
+.sh-body{overflow:auto;padding:16px;flex:1}
+.sh-foot{flex:none;display:flex;gap:10px;padding:12px 16px calc(12px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:var(--card)}
+.sh-foot .btn{flex:2}.sh-foot .btn.ghost{flex:1}
+.fgroup{background:var(--card);border:1px solid color-mix(in srgb,var(--gold) 20%,var(--line));border-radius:20px;padding:6px 14px 14px;margin-bottom:12px}
+.fgt{font:600 18px "Cormorant Garamond",serif;margin:8px 0 2px;color:var(--accent)}
+label{display:block;font-size:10.5px;color:var(--gold);margin:12px 0 6px;font-weight:600;text-transform:uppercase;letter-spacing:1.3px}
+input,select{width:100%;font:15px Inter,sans-serif;padding:13px 14px;border-radius:14px;border:1px solid color-mix(in srgb,var(--gold) 28%,var(--line));background:var(--field);color:var(--ink);appearance:none;-webkit-appearance:none;min-height:48px}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23a8803f' stroke-width='1.6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+input:focus,select:focus{outline:0;border-color:var(--gold);box-shadow:0 0 0 4px color-mix(in srgb,var(--gold-2) 30%,transparent)}
+.money{position:relative}
+.money span{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-weight:600;color:var(--gold);font-size:14px;pointer-events:none}
+.money input{padding-left:44px;font-variant-numeric:tabular-nums;font-weight:500}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.photoPick{display:flex;gap:12px;align-items:center;margin-top:10px}
+.thumb{width:72px;height:72px;border-radius:16px;flex:none;background:var(--herograd);background-size:cover;background-position:center;border:1px solid color-mix(in srgb,var(--gold) 35%,transparent);display:grid;place-items:center;color:var(--gold-2)}
+.thumb svg{width:24px;height:24px}
+.photoPick .btns{flex:1;display:grid;gap:8px}
+.photoPick .btn{padding:10px;font-size:13.5px}
+.hint{font-size:12px;color:var(--muted);margin-top:8px}
+
+.toast{position:fixed;left:50%;bottom:calc(110px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--accent-2);color:var(--gold-2);border:1px solid rgba(230,200,143,.4);padding:10px 18px;border-radius:99px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:30;white-space:nowrap}
 .toast.show{opacity:1}
 .hidden{display:none!important}
 </style>
 </head>
 <body>
 <div class="wrap" id="app"></div>
-<button class="btn fab hidden" id="fab" aria-label="Tambah">+</button>
-<nav><div class="in" id="nav"></div></nav>
+<nav id="nav"></nav>
 <div class="mask" id="mask"><div class="sheet" id="sheet"></div></div>
 <div class="toast" id="toast"></div>
+<input type="file" id="photoIn" accept="image/*" class="hidden">
 
 <script>
 const KEY='kahwin-v1';
@@ -138,17 +186,19 @@ const DEFAULT_TASKS=[
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 function load(){
   try{const s=JSON.parse(localStorage.getItem(KEY));if(s)return s}catch(e){}
-  return {settings:{n1:'',n2:'',date:'',time:'10:00',venue:''},costs:[],savings:[],guests:[],
+  return {settings:{n1:'',n2:'',date:'',time:'10:00',venue:'',photo:''},costs:[],savings:[],guests:[],
     tasks:DEFAULT_TASKS.map(([t,w])=>({id:uid(),text:t,when:w,done:false}))};
 }
-let S=load(), tab=localStorage.getItem(KEY+'-tab')||'home', guestFilter='all';
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('Gagal simpan')}};
+let S=load(), tab='home', guestFilter='all';
+try{tab=localStorage.getItem(KEY+'-tab')||'home'}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S));return true}catch(e){toast('Ruang simpanan penuh');return false}};
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const num=v=>Math.max(0,parseFloat(v)||0);
 const rm=n=>'RM '+num(n).toLocaleString('ms-MY',{minimumFractionDigits:0,maximumFractionDigits:2});
 const fmtDate=d=>d?new Date(d+'T00:00').toLocaleDateString('ms-MY',{day:'numeric',month:'short',year:'numeric'}):'';
 const sum=(a,f)=>a.reduce((t,x)=>t+num(f(x)),0);
-function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),1800)}
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),1900)}
 
 const ICONS={
  home:'<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
@@ -156,14 +206,16 @@ const ICONS={
  save:'<path d="M12 3v18M17 7.5c0-1.9-2.2-3-5-3s-5 1.1-5 3 2.2 2.8 5 3.5 5 1.6 5 3.5-2.2 3-5 3-5-1.1-5-3"/>',
  task:'<path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/>',
  guest:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.5 3.4-5.5 6.5-5.5s5.7 2 6.5 5.5"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14.8c1.8.8 3 2.6 3.5 5.2"/>',
+ plus:'<path d="M12 5v14M5 12h14"/>',
+ cam:'<path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.5" r="3.5"/>',
+ img:'<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/>',
  gear:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>'
 };
 const icon=n=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICONS[n]}</svg>`;
 const TABS=[['home','Utama'],['cost','Kos'],['save','Simpanan'],['task','Semak'],['guest','Tetamu']];
+const ADD={cost:'Tambah kos',save:'Tambah',task:'Tambah',guest:'Tambah'};
 
-function renderNav(){
-  document.getElementById('nav').innerHTML=TABS.map(([k,l])=>`<button class="${tab===k?'on':''}" data-tab="${k}">${icon(k)}${l}</button>`).join('');
-}
+function renderNav(){document.getElementById('nav').innerHTML=TABS.map(([k,l])=>`<button class="${tab===k?'on':''}" data-tab="${k}" aria-label="${l}"><span class="ic">${icon(k)}</span>${l}</button>`).join('')}
 document.getElementById('nav').onclick=e=>{const b=e.target.closest('button');if(!b)return;tab=b.dataset.tab;try{localStorage.setItem(KEY+'-tab',tab)}catch(e){}render();scrollTo(0,0)};
 
 function totals(){
@@ -171,11 +223,14 @@ function totals(){
   return {est,paid,saved,need:Math.max(0,est-saved),pct:est?Math.min(100,saved/est*100):0};
 }
 function target(){const s=S.settings;if(!s.date)return null;return new Date(s.date+'T'+(s.time||'00:00'))}
+const head=(kick,title,add)=>`<div class="top"><div><div class="kick">${kick}</div><h1>${title}</h1></div>${add?`<button class="addbtn" data-add>${icon('plus')}${add}</button>`:''}</div>`;
+const emptyBox=(t,s,b)=>`<div class="empty"><span class="serif">${t}</span>${s}<br><button class="addbtn" data-add>${icon('plus')}${b}</button></div>`;
+const heroBg=()=>S.settings.photo?`style="background-image:linear-gradient(180deg,rgba(58,18,34,.05) 0%,rgba(58,18,34,.55) 40%,rgba(42,12,24,.96) 78%),url('${S.settings.photo}')"`:'';
 
 /* ---------- views ---------- */
 function vHome(){
   const s=S.settings,T=totals(),tg=target();
-  const names=(s.n1||s.n2)?`${esc(s.n1||'…')} <span style="font-size:.8em">&amp;</span> ${esc(s.n2||'…')}`:'Hari Bahagia Kita';
+  const names=(s.n1||s.n2)?`${esc(s.n1||'…')} <span style="font-size:.75em">&amp;</span> ${esc(s.n2||'…')}`:'Hari Bahagia Kita';
   let months=null; if(tg){months=Math.max(1,Math.ceil((tg-new Date())/(30.44*864e5)))}
   const perMonth=months?T.need/months:0;
   const done=S.tasks.filter(t=>t.done).length;
@@ -184,14 +239,16 @@ function vHome(){
   const due=S.costs.filter(c=>c.due&&num(c.est)-num(c.paid)>0).sort((a,b)=>a.due.localeCompare(b.due)).slice(0,4);
   const r=50,C=2*Math.PI*r;
   return `
-  <div class="top"><div><div class="sub">Persediaan Perkahwinan</div><h1>Assalamualaikum</h1></div>
+  <div class="top"><div><div class="kick">Persediaan Perkahwinan</div><h1>Assalamualaikum</h1></div>
    <button class="iconbtn" id="gear" aria-label="Tetapan">${icon('gear')}</button></div>
-  <div class="card hero">
+  <div class="card hero ${s.photo?'photo':''}" ${heroBg()}>
+    <button class="glass" style="right:16px" data-photo aria-label="Tukar gambar">${icon('cam')}</button>
     <div class="kicker">Walimatul Urus</div>
     <div class="names script goldtxt">${names}</div>
     <div class="orn">✦</div>
     <div class="sub">${tg?esc(tg.toLocaleDateString('ms-MY',{weekday:'long',day:'numeric',month:'long',year:'numeric'})):'Tetapkan tarikh majlis'}${s.venue?' · '+esc(s.venue):''}</div>
-    ${tg?`<div class="cd" id="cd"></div>`:`<div style="margin-top:16px"><button class="btn goldbtn" id="setDate">Tetapkan tarikh</button></div>`}
+    ${tg?`<div class="cd" id="cd"></div><button class="pillbtn" id="wall">${icon('img')}Simpan kad countdown</button>`
+       :`<div style="margin-top:18px"><button class="pillbtn" id="setDate">Tetapkan tarikh majlis</button></div>`}
   </div>
   <div class="card">
     <div class="ringrow">
@@ -209,44 +266,44 @@ function vHome(){
     ${T.est>0&&T.need===0?`<div class="tip" style="color:var(--ok)">Alhamdulillah, sasaran tercapai!</div>`:''}
   </div>
   <div class="grid2">
-    <div class="card stat"><div class="l">Sudah dibayar ke vendor</div><div class="n">${rm(T.paid)}</div><div class="bar gold"><i style="width:${T.est?T.paid/T.est*100:0}%"></i></div></div>
-    <div class="card stat"><div class="l">Senarai semak</div><div class="n">${done}/${S.tasks.length}</div><div class="bar"><i style="width:${S.tasks.length?done/S.tasks.length*100:0}%"></i></div></div>
+    <div class="card stat"><div class="l">Dibayar ke vendor</div><div class="n">${rm(T.paid)}</div><div class="bar gold"><i style="width:${T.est?T.paid/T.est*100:0}%"></i></div></div>
+    <div class="card stat"><div class="l">Senarai semak</div><div class="n">${done} / ${S.tasks.length}</div><div class="bar"><i style="width:${S.tasks.length?done/S.tasks.length*100:0}%"></i></div></div>
     <div class="card stat"><div class="l">Tetamu dijemput</div><div class="n">${pax} pax</div></div>
     <div class="card stat"><div class="l">Sah hadir</div><div class="n">${paxYes} pax</div></div>
   </div>
   <h2>Bayaran akan datang</h2>
-  <div class="card list">${due.length?due.map(c=>`<div class="row" data-cost="${c.id}"><div class="main"><div class="t">${esc(c.name)}</div><div class="s">${esc(c.vendor||c.cat)}</div></div>
-    <div class="amt">${rm(num(c.est)-num(c.paid))}<small><span class="pill ${c.due<now?'warn':''}">${c.due<now?'Lewat · ':''}${fmtDate(c.due)}</span></small></div></div>`).join(''):'<div class="empty">Tiada bayaran tertunggak. Letak "tarikh akhir bayar" pada item kos untuk peringatan.</div>'}</div>`;
+  <div class="card list">${due.length?due.map(c=>`<div class="row" data-cost="${c.id}"><div class="av">${esc((c.name||'?')[0].toUpperCase())}</div><div class="main"><div class="t">${esc(c.name)}</div><div class="s">${esc(c.vendor||c.cat)}</div></div>
+    <div class="amt">${rm(num(c.est)-num(c.paid))}<small><span class="pill ${c.due<now?'warn':''}">${c.due<now?'Lewat · ':''}${fmtDate(c.due)}</span></small></div></div>`).join(''):'<div class="empty" style="padding:14px">Tiada bayaran tertunggak.<br>Letak <b>tarikh akhir bayar</b> pada item kos untuk peringatan.</div>'}</div>`;
 }
 function vCost(){
   const T=totals();
   const groups=CATS.map(cat=>({cat,items:S.costs.filter(c=>(c.cat||'Lain-lain')===cat)})).filter(g=>g.items.length);
-  return `<div class="top"><div><div class="sub">Bajet</div><h1>Kos Perkahwinan</h1></div></div>
-  <div class="card"><div class="kv"><span>Jumlah anggaran</span><b>${rm(T.est)}</b></div>
-   <div class="kv"><span>Sudah dibayar</span><b style="color:var(--ok)">${rm(T.paid)}</b></div>
-   <div class="kv"><span>Baki bayaran vendor</span><b style="color:var(--warn)">${rm(T.est-T.paid)}</b></div>
-   <div class="bar gold"><i style="width:${T.est?T.paid/T.est*100:0}%"></i></div></div>
+  return head('Bajet','Kos Majlis',S.costs.length?ADD.cost:'')+`
+  <div class="card"><div class="stat"><div class="l">Jumlah anggaran</div><div class="big">${rm(T.est)}</div></div>
+   <div class="bar gold"><i style="width:${T.est?T.paid/T.est*100:0}%"></i></div>
+   <div style="margin-top:8px"><div class="kv"><span>Sudah dibayar</span><b style="color:var(--ok)">${rm(T.paid)}</b></div>
+   <div class="kv"><span>Baki bayaran vendor</span><b style="color:var(--warn)">${rm(T.est-T.paid)}</b></div></div></div>
   ${groups.length?groups.map(g=>{const e=sum(g.items,c=>c.est),p=sum(g.items,c=>c.paid);return `
    <div class="card"><div class="catHead"><h3>${esc(g.cat)}</h3><span class="sub">${rm(e)}</span></div>
    <div class="bar gold" style="margin-bottom:4px"><i style="width:${e?p/e*100:0}%"></i></div>
    <div class="list">${g.items.map(c=>{const bal=num(c.est)-num(c.paid);return `<div class="row" data-cost="${c.id}"><div class="main"><div class="t">${esc(c.name)}</div>
      <div class="s">${esc(c.vendor||'')}${c.vendor&&c.due?' · ':''}${c.due?'Bayar sebelum '+fmtDate(c.due):''}</div></div>
      <div class="amt">${rm(c.est)}<small>${bal<=0?'<span class="pill ok">Selesai</span>':'Baki '+rm(bal)}</small></div></div>`}).join('')}</div></div>`}).join('')
-  :'<div class="card empty">Belum ada item kos.<br>Tekan <b>+</b> untuk tambah (contoh: Katering 500 pax).</div>'}`;
+  :`<div class="card">${emptyBox('Belum ada item kos','Mulakan dengan item besar — dewan, katering, pelamin.','Tambah kos pertama')}</div>`}`;
 }
 function vSave(){
   const T=totals(), list=[...S.savings].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
-  return `<div class="top"><div><div class="sub">Tabung</div><h1>Simpanan</h1></div></div>
-  <div class="card"><div class="stat"><div class="l">Jumlah terkumpul</div><div class="n" style="font-size:30px;color:var(--ok)">${rm(T.saved)}</div></div>
-   <div class="bar"><i style="width:${T.pct}%"></i></div>
+  return head('Tabung','Simpanan',S.savings.length?ADD.save:'')+`
+  <div class="card"><div class="stat"><div class="l">Jumlah terkumpul</div><div class="big" style="color:var(--ok)">${rm(T.saved)}</div></div>
+   <div class="bar gold"><i style="width:${T.pct}%"></i></div>
    <div class="sub" style="margin-top:8px">${Math.round(T.pct)}% daripada ${rm(T.est)} · baki ${rm(T.need)}</div></div>
-  <div class="card list">${list.length?list.map(s=>`<div class="row" data-save="${s.id}"><div class="main"><div class="t">${esc(s.note||'Simpanan')}</div><div class="s">${fmtDate(s.date)}${s.who?' · '+esc(s.who):''}</div></div><div class="amt" style="color:var(--ok)">+${rm(s.amt)}</div></div>`).join('')
-  :'<div class="empty">Rekod setiap kali anda menabung atau terima sumbangan.<br>Tekan <b>+</b> untuk tambah.</div>'}</div>`;
+  <div class="card list">${list.length?list.map(s=>`<div class="row" data-save="${s.id}"><div class="av">${esc((s.who||s.note||'S')[0].toUpperCase())}</div><div class="main"><div class="t">${esc(s.note||'Simpanan')}</div><div class="s">${fmtDate(s.date)}${s.who?' · '+esc(s.who):''}</div></div><div class="amt" style="color:var(--ok)">+${rm(s.amt)}</div></div>`).join('')
+  :emptyBox('Tabung masih kosong','Rekod setiap kali menabung atau terima sumbangan.','Rekod simpanan')}</div>`;
 }
 function vTask(){
   const done=S.tasks.filter(t=>t.done).length;
-  return `<div class="top"><div><div class="sub">${done} daripada ${S.tasks.length} selesai</div><h1>Senarai Semak</h1></div></div>
-  <div class="card"><div class="bar"><i style="width:${S.tasks.length?done/S.tasks.length*100:0}%"></i></div></div>
+  return head(`${done} daripada ${S.tasks.length} selesai`,'Senarai Semak',ADD.task)+`
+  <div class="card" style="padding:14px 18px"><div class="bar gold" style="margin:0"><i style="width:${S.tasks.length?done/S.tasks.length*100:0}%"></i></div></div>
   ${WHEN.map((w,i)=>{const items=S.tasks.filter(t=>(t.when??0)==i);if(!items.length)return'';return `<div class="card"><div class="catHead"><h3>${w}</h3><span class="sub">${items.filter(t=>t.done).length}/${items.length}</span></div>
    <div class="list">${items.map(t=>`<div class="row ${t.done?'done':''}" data-task="${t.id}"><div class="chk ${t.done?'on':''}" data-toggle="${t.id}">${t.done?'✓':''}</div><div class="main"><div class="t">${esc(t.text)}</div></div></div>`).join('')}</div></div>`}).join('')}`;
 }
@@ -254,88 +311,143 @@ function vGuest(){
   const f=guestFilter, by=k=>S.guests.filter(g=>k==='all'||g.side===k);
   const list=by(f), st={hadir:'ok',tidak:'warn'};
   const pax=a=>sum(a,g=>g.pax||1);
-  return `<div class="top"><div><div class="sub">${pax(S.guests)} pax · ${S.guests.length} jemputan</div><h1>Tetamu</h1></div></div>
+  return head(`${pax(S.guests)} pax · ${S.guests.length} jemputan`,'Tetamu',S.guests.length?ADD.guest:'')+`
   <div class="grid2">
    <div class="card stat"><div class="l">Pihak lelaki</div><div class="n">${pax(by('lelaki'))} pax</div></div>
    <div class="card stat"><div class="l">Pihak perempuan</div><div class="n">${pax(by('perempuan'))} pax</div></div>
   </div>
   <div class="seg" id="gseg">${[['all','Semua'],['lelaki','Lelaki'],['perempuan','Perempuan']].map(([k,l])=>`<button class="${f===k?'on':''}" data-f="${k}">${l}</button>`).join('')}</div>
-  <div class="card list">${list.length?list.map(g=>`<div class="row" data-guest="${g.id}"><div class="main"><div class="t">${esc(g.name)}</div><div class="s">${g.side==='lelaki'?'Pihak lelaki':'Pihak perempuan'}${g.phone?' · '+esc(g.phone):''}</div></div>
+  <div class="card list">${list.length?list.map(g=>`<div class="row" data-guest="${g.id}"><div class="av">${esc((g.name||'?')[0].toUpperCase())}</div><div class="main"><div class="t">${esc(g.name)}</div><div class="s">${g.side==='lelaki'?'Pihak lelaki':'Pihak perempuan'}${g.phone?' · '+esc(g.phone):''}</div></div>
    <div class="amt">${num(g.pax)||1} pax<small><span class="pill ${st[g.status]||''}">${g.status==='hadir'?'Hadir':g.status==='tidak'?'Tidak hadir':'Belum jawab'}</span></small></div></div>`).join('')
-  :'<div class="empty">Belum ada tetamu. Tekan <b>+</b> untuk tambah keluarga / kawan.</div>'}</div>`;
+  :emptyBox('Belum ada tetamu','Tambah keluarga dan kawan, satu baris setiap keluarga.','Tambah tetamu')}</div>`;
 }
 
 let cdTimer;
+function left(){const tg=target();if(!tg)return null;const d=Math.max(0,tg-new Date());return {d,D:Math.floor(d/864e5),H:Math.floor(d/36e5)%24,M:Math.floor(d/6e4)%60,S:Math.floor(d/1e3)%60}}
 function tick(){
-  const el=document.getElementById('cd'),tg=target();if(!el||!tg)return;
-  let d=Math.max(0,tg-new Date());
-  if(d===0){el.outerHTML='<div class="serif" style="font-size:24px;margin-top:14px;color:var(--accent)">Selamat Pengantin Baru!</div>';return}
-  const D=Math.floor(d/864e5),H=Math.floor(d/36e5)%24,M=Math.floor(d/6e4)%60,Sx=Math.floor(d/1e3)%60;
-  el.innerHTML=[[D,'Hari'],[H,'Jam'],[M,'Minit'],[Sx,'Saat']].map(([n,l])=>`<div><b>${String(n).padStart(2,'0')}</b><span>${l}</span></div>`).join('');
+  const el=document.getElementById('cd'),L=left();if(!el||!L)return;
+  if(L.d===0){el.outerHTML='<div class="script goldtxt" style="font-size:34px;margin:14px 0">Selamat Pengantin Baru!</div>';return}
+  el.innerHTML=[[L.D,'Hari'],[L.H,'Jam'],[L.M,'Minit'],[L.S,'Saat']].map(([n,l])=>`<div><b>${String(n).padStart(2,'0')}</b><span>${l}</span></div>`).join('');
 }
+function badge(){const L=left();try{if(L&&navigator.setAppBadge)navigator.setAppBadge(L.D).catch(()=>{})}catch(e){}}
 
 function render(){
   renderNav();
   const v={home:vHome,cost:vCost,save:vSave,task:vTask,guest:vGuest}[tab]||vHome;
   document.getElementById('app').innerHTML=v();
-  document.getElementById('fab').classList.toggle('hidden',tab==='home');
   clearInterval(cdTimer);if(tab==='home'){tick();cdTimer=setInterval(tick,1000)}
+  badge();
+}
+
+/* ---------- photo ---------- */
+function readPhoto(file){return new Promise((res,rej)=>{const img=new Image();img.onload=()=>{const m=1100,k=Math.min(1,m/Math.max(img.width,img.height));
+  const c=document.createElement('canvas');c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+  URL.revokeObjectURL(img.src);res(c.toDataURL('image/jpeg',.8))};img.onerror=rej;img.src=URL.createObjectURL(file)})}
+let photoCb=null;
+const pickPhoto=cb=>{photoCb=cb;const i=document.getElementById('photoIn');i.value='';i.click()};
+document.getElementById('photoIn').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const d=await readPhoto(f);photoCb&&photoCb(d)}catch(_){toast('Gambar tidak dapat dibaca')}};
+function setPhoto(d){const old=S.settings.photo;S.settings.photo=d;if(!save()){S.settings.photo=old;return}render();toast(d?'Gambar disimpan':'Gambar dibuang')}
+
+/* ---------- countdown wallpaper ---------- */
+async function wallpaper(){
+  const L=left(),s=S.settings;if(!L)return;
+  try{await document.fonts.load('120px "Great Vibes"');await document.fonts.load('500 260px "Playfair Display"')}catch(e){}
+  const W=1080,H=1920,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+  let g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,'#5a1f37');g.addColorStop(1,'#2a0c18');x.fillStyle=g;x.fillRect(0,0,W,H);
+  if(s.photo){const im=new Image();im.src=s.photo;await im.decode().catch(()=>{});const k=Math.max(W/im.width,H/im.height);x.drawImage(im,(W-im.width*k)/2,(H-im.height*k)/2,im.width*k,im.height*k);
+    g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'rgba(42,12,24,.15)');g.addColorStop(.42,'rgba(42,12,24,.45)');g.addColorStop(.7,'rgba(42,12,24,.92)');g.addColorStop(1,'rgba(30,8,16,.98)');x.fillStyle=g;x.fillRect(0,0,W,H)}
+  const gold=x.createLinearGradient(200,0,880,0);gold.addColorStop(0,'#a87d3e');gold.addColorStop(.5,'#f1dcae');gold.addColorStop(1,'#b48a4a');
+  x.strokeStyle='rgba(230,200,143,.45)';x.lineWidth=3;x.strokeRect(40,40,W-80,H-80);
+  x.textAlign='center';x.fillStyle='#e6c88f';
+  const base=1080;
+  x.font='600 30px Inter, sans-serif';x.letterSpacing='10px';x.fillText('WALIMATUL URUS',W/2,base);x.letterSpacing='0px';
+  x.fillStyle=gold;x.font='130px "Great Vibes", cursive';
+  const nm=(s.n1||s.n2)?`${s.n1||''} & ${s.n2||''}`:'Hari Bahagia Kita';
+  let fs=130;while(x.measureText(nm).width>W-160&&fs>60){fs-=6;x.font=fs+'px "Great Vibes", cursive'}
+  x.fillText(nm,W/2,base+150);
+  x.font='500 260px "Playfair Display", serif';x.fillText(String(L.D),W/2,base+460);
+  x.fillStyle='#f7ecdf';x.font='600 34px Inter, sans-serif';x.letterSpacing='12px';x.fillText('HARI LAGI',W/2,base+540);x.letterSpacing='0px';
+  x.fillStyle='rgba(247,236,223,.85)';x.font='500 36px Inter, sans-serif';
+  x.fillText(target().toLocaleDateString('ms-MY',{weekday:'long',day:'numeric',month:'long',year:'numeric'}),W/2,base+640);
+  if(s.venue)x.fillText(s.venue,W/2,base+690);
+  const blob=await new Promise(r=>c.toBlob(r,'image/png'));
+  const file=new File([blob],'countdown-kahwin.png',{type:'image/png'});
+  if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],title:'Countdown Kahwin'});return}catch(e){if(e.name==='AbortError')return}}
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=file.name;a.click();toast('Kad countdown dimuat turun');
 }
 
 /* ---------- forms ---------- */
-function openForm(title,fields,val,onSave,onDel,extra=''){
+function field(f,val){
+  const v=esc(val[f.k]??f.d??''), id='f_'+f.k;
+  let inp;
+  if(f.t==='select')inp=`<select id="${id}" name="${f.k}">${f.o.map(o=>{const [ov,ol]=Array.isArray(o)?o:[o,o];return `<option value="${esc(ov)}" ${String(val[f.k]??f.d??'')===String(ov)?'selected':''}>${esc(ol)}</option>`}).join('')}</select>`;
+  else if(f.t==='money')inp=`<div class="money"><span>RM</span><input id="${id}" name="${f.k}" type="number" inputmode="decimal" step="any" min="0" ${f.req?'required':''} placeholder="0" value="${v}"></div>`;
+  else inp=`<input id="${id}" name="${f.k}" type="${f.t||'text'}" ${f.t==='number'?'inputmode="numeric" min="1"':''} ${f.req?'required':''} placeholder="${esc(f.p||'')}" value="${v}">`;
+  return `<div><label for="${id}">${f.l}</label>${inp}</div>`;
+}
+// groups: [{title, fields:[...], duo:[[a,b]] }] — fields may be arrays (pair on one row)
+function openForm(kick,title,groups,val,onSave,onDel,extraTop='',extraBottom=''){
   const sh=document.getElementById('sheet');
-  sh.innerHTML=`<h2>${title}</h2><form id="f">${fields.map(f=>`<label for="f_${f.k}">${f.l}</label>${
-    f.t==='select'?`<select id="f_${f.k}" name="${f.k}">${f.o.map(o=>{const [v,l]=Array.isArray(o)?o:[o,o];return `<option value="${esc(v)}" ${String(val[f.k]??f.d??'')===String(v)?'selected':''}>${esc(l)}</option>`}).join('')}</select>`
-    :`<input id="f_${f.k}" name="${f.k}" type="${f.t||'text'}" ${f.t==='number'?'inputmode="decimal" step="any" min="0"':''} ${f.req?'required':''} placeholder="${esc(f.p||'')}" value="${esc(val[f.k]??f.d??'')}">`}`).join('')}
-   ${extra}<div class="actions"><button class="btn" type="submit">Simpan</button>${onDel?'<button class="btn danger" type="button" id="del">Padam</button>':''}<button class="btn ghost" type="button" id="cancel">Batal</button></div></form>`;
-  document.getElementById('mask').classList.add('show');
-  document.getElementById('f').onsubmit=e=>{e.preventDefault();const o={};new FormData(e.target).forEach((v,k)=>o[k]=v.trim());onSave(o);save();close();render()};
-  document.getElementById('cancel').onclick=close;
+  sh.innerHTML=`<form id="f" novalidate>
+   <div class="sh-head"><div class="kicker">${kick}</div><h2>${title}</h2><button type="button" class="sh-x" id="cancel" aria-label="Tutup">×</button></div>
+   <div class="sh-body">${extraTop}${groups.map(g=>`<div class="fgroup">${g.title?`<div class="fgt">${g.title}</div>`:''}${g.fields.map(f=>Array.isArray(f)?`<div class="duo">${f.map(x=>field(x,val)).join('')}</div>`:field(f,val)).join('')}${g.html||''}</div>`).join('')}
+    ${extraBottom}${onDel?'<button class="btn danger" type="button" id="del">Padam item ini</button>':''}</div>
+   <div class="sh-foot"><button class="btn ghost" type="button" id="cancel2">Batal</button><button class="btn" type="submit">Simpan</button></div></form>`;
+  document.getElementById('mask').classList.add('show');document.body.style.overflow='hidden';
+  const form=document.getElementById('f');
+  form.onsubmit=e=>{e.preventDefault();const bad=[...form.querySelectorAll('[required]')].find(i=>!i.value.trim());
+    if(bad){bad.focus();toast('Sila isi '+(form.querySelector(`label[for="${bad.id}"]`)?.textContent||'ruangan wajib'));return}
+    const o={};new FormData(form).forEach((v,k)=>o[k]=String(v).trim());onSave(o);save();close();render()};
+  document.getElementById('cancel').onclick=close;document.getElementById('cancel2').onclick=close;
   if(onDel)document.getElementById('del').onclick=()=>{if(confirm('Padam item ini?')){onDel();save();close();render();toast('Dipadam')}};
 }
-function close(){document.getElementById('mask').classList.remove('show')}
+function close(){document.getElementById('mask').classList.remove('show');document.body.style.overflow=''}
 document.getElementById('mask').onclick=e=>{if(e.target.id==='mask')close()};
+addEventListener('keydown',e=>{if(e.key==='Escape')close()});
 
 const upsert=(arr,item)=>{const i=arr.findIndex(x=>x.id===item.id);i<0?arr.push(item):arr[i]=item};
-const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
 
-function formCost(c={}){openForm(c.id?'Kemaskini kos':'Tambah kos',[
-  {k:'name',l:'Nama item',req:1,p:'cth: Katering 500 pax'},{k:'cat',l:'Kategori',t:'select',o:CATS,d:'Lain-lain'},
-  {k:'est',l:'Kos anggaran (RM)',t:'number',req:1},{k:'paid',l:'Sudah dibayar (RM)',t:'number',d:0},
-  {k:'vendor',l:'Vendor / kedai',p:'Pilihan'},{k:'phone',l:'No. telefon vendor',t:'tel',p:'Pilihan'},
-  {k:'due',l:'Tarikh akhir bayar',t:'date'}],c,o=>{upsert(S.costs,{...c,...o,id:c.id||uid(),est:num(o.est),paid:num(o.paid)});toast('Disimpan')},
-  c.id&&(()=>S.costs=S.costs.filter(x=>x.id!==c.id)),
-  c.phone?`<a class="btn ghost" style="display:block;text-align:center;text-decoration:none;margin-top:12px" href="https://wa.me/${esc(String(c.phone).replace(/\D/g,'').replace(/^0/,'60'))}" target="_blank" rel="noopener">WhatsApp vendor</a>`:'')}
-function formSave(s={}){openForm(s.id?'Kemaskini simpanan':'Tambah simpanan',[
-  {k:'amt',l:'Jumlah (RM)',t:'number',req:1},{k:'date',l:'Tarikh',t:'date',d:today()},
-  {k:'note',l:'Catatan',p:'cth: Gaji Disember / Duit ASB'},{k:'who',l:'Daripada',p:'cth: Saya / Tunang / Mak ayah'}],s,
+function formCost(c={}){openForm('Bajet',c.id?'Kemaskini Kos':'Tambah Kos',[
+  {title:'Butiran',fields:[{k:'name',l:'Nama item',req:1,p:'cth: Katering 500 pax'},{k:'cat',l:'Kategori',t:'select',o:CATS,d:'Lain-lain'}]},
+  {title:'Bayaran',fields:[[{k:'est',l:'Kos anggaran',t:'money',req:1},{k:'paid',l:'Sudah dibayar',t:'money'}],{k:'due',l:'Tarikh akhir bayar',t:'date'}]},
+  {title:'Vendor',fields:[{k:'vendor',l:'Nama vendor / kedai',p:'Pilihan'},{k:'phone',l:'No. telefon',t:'tel',p:'cth: 012-345 6789'}],
+   html:c.phone?`<a class="btn line" style="display:block;text-align:center;text-decoration:none;margin-top:12px" href="https://wa.me/${esc(String(c.phone).replace(/\D/g,'').replace(/^0/,'60'))}" target="_blank" rel="noopener">WhatsApp vendor</a>`:''}],
+  c,o=>{upsert(S.costs,{...c,...o,id:c.id||uid(),est:num(o.est),paid:num(o.paid)});toast('Disimpan')},c.id&&(()=>S.costs=S.costs.filter(x=>x.id!==c.id)))}
+function formSave(s={}){openForm('Tabung',s.id?'Kemaskini Simpanan':'Rekod Simpanan',[
+  {fields:[{k:'amt',l:'Jumlah',t:'money',req:1},{k:'date',l:'Tarikh',t:'date',d:today()},{k:'note',l:'Catatan',p:'cth: Gaji Disember / Duit ASB'},{k:'who',l:'Daripada',p:'cth: Saya / Tunang / Mak ayah'}]}],s,
   o=>{upsert(S.savings,{...s,...o,id:s.id||uid(),amt:num(o.amt)});toast('Simpanan direkod')},s.id&&(()=>S.savings=S.savings.filter(x=>x.id!==s.id)))}
-function formTask(t={}){openForm(t.id?'Kemaskini tugasan':'Tambah tugasan',[
-  {k:'text',l:'Tugasan',req:1},{k:'when',l:'Bila',t:'select',o:WHEN.map((w,i)=>[i,w]),d:0}],t,
+function formTask(t={}){openForm('Senarai semak',t.id?'Kemaskini Tugasan':'Tambah Tugasan',[
+  {fields:[{k:'text',l:'Tugasan',req:1,p:'cth: Tempah kereta pengantin'},{k:'when',l:'Bila',t:'select',o:WHEN.map((w,i)=>[i,w]),d:0}]}],t,
   o=>upsert(S.tasks,{...t,...o,id:t.id||uid(),when:+o.when,done:!!t.done}),t.id&&(()=>S.tasks=S.tasks.filter(x=>x.id!==t.id)))}
-function formGuest(g={}){openForm(g.id?'Kemaskini tetamu':'Tambah tetamu',[
-  {k:'name',l:'Nama / keluarga',req:1,p:'cth: Keluarga Pak Long'},{k:'side',l:'Pihak',t:'select',o:[['lelaki','Pihak lelaki'],['perempuan','Pihak perempuan']],d:'perempuan'},
-  {k:'pax',l:'Bilangan pax',t:'number',d:1},{k:'phone',l:'No. telefon',t:'tel',p:'Pilihan'},
-  {k:'status',l:'RSVP',t:'select',o:[['belum','Belum jawab'],['hadir','Hadir'],['tidak','Tidak hadir']],d:'belum'}],g,
+function formGuest(g={}){openForm('Jemputan',g.id?'Kemaskini Tetamu':'Tambah Tetamu',[
+  {fields:[{k:'name',l:'Nama / keluarga',req:1,p:'cth: Keluarga Pak Long'},[{k:'side',l:'Pihak',t:'select',o:[['lelaki','Lelaki'],['perempuan','Perempuan']],d:'perempuan'},{k:'pax',l:'Bil. pax',t:'number',d:1}],
+   {k:'phone',l:'No. telefon',t:'tel',p:'Pilihan'},{k:'status',l:'RSVP',t:'select',o:[['belum','Belum jawab'],['hadir','Hadir'],['tidak','Tidak hadir']],d:'belum'}]}],g,
   o=>upsert(S.guests,{...g,...o,id:g.id||uid(),pax:Math.max(1,Math.round(num(o.pax)))}),g.id&&(()=>S.guests=S.guests.filter(x=>x.id!==g.id)))}
 function formSettings(){
-  openForm('Tetapan',[{k:'n1',l:'Nama pengantin lelaki'},{k:'n2',l:'Nama pengantin perempuan'},
-   {k:'date',l:'Tarikh majlis',t:'date'},{k:'time',l:'Masa',t:'time'},{k:'venue',l:'Lokasi',p:'cth: Dewan Seri Melati'}],S.settings,
-   o=>{S.settings={...S.settings,...o};toast('Tetapan disimpan')},null,
-   `<label>Sandaran data</label><div class="grid2"><button type="button" class="btn ghost" id="exp">Eksport</button><button type="button" class="btn ghost" id="imp">Import</button></div>
-    <input type="file" id="impf" accept="application/json" class="hidden">
-    <div class="sub" style="margin-top:6px">Data disimpan dalam telefon ini sahaja. Eksport untuk sandaran atau pindah ke telefon pasangan.</div>`);
-  document.getElementById('exp').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,1)],{type:'application/json'}));a.download='persediaan-kahwin-'+today()+'.json';a.click()};
+  let pending=S.settings.photo||'';
+  const thumb=()=>`<div class="thumb" id="thumb" ${pending?`style="background-image:url('${pending}')"`:''}>${pending?'':icon('cam')}</div>`;
+  openForm('Tetapan','Butiran Majlis',[
+   {title:'Pasangan',fields:[{k:'n1',l:'Pengantin lelaki',p:'cth: Ahmad'},{k:'n2',l:'Pengantin perempuan',p:'cth: Aisyah'}],
+    html:`<label>Gambar pasangan</label><div class="photoPick">${thumb()}<div class="btns"><button type="button" class="btn line" id="pp">Pilih gambar</button><button type="button" class="btn danger" id="pr" style="padding:6px">Buang gambar</button></div></div>`},
+   {title:'Majlis',fields:[[{k:'date',l:'Tarikh',t:'date'},{k:'time',l:'Masa',t:'time'}],{k:'venue',l:'Lokasi',p:'cth: Dewan Seri Melati'}]},
+   {title:'Sandaran data',fields:[],html:`<div class="duo" style="margin-top:10px"><button type="button" class="btn line" id="exp">Eksport</button><button type="button" class="btn line" id="imp">Import</button></div>
+    <input type="file" id="impf" accept="application/json" class="hidden"><div class="hint">Data disimpan dalam telefon ini sahaja. Eksport untuk sandaran atau pindah ke telefon pasangan.</div>`}],
+   S.settings,o=>{const old={...S.settings};S.settings={...S.settings,...o,photo:pending};if(!save()){S.settings=old}else toast('Tetapan disimpan')});
+  const upd=()=>{document.getElementById('thumb').outerHTML=thumb()};
+  document.getElementById('pp').onclick=()=>pickPhoto(d=>{pending=d;upd()});
+  document.getElementById('pr').onclick=()=>{pending='';upd()};
+  document.getElementById('exp').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S)],{type:'application/json'}));a.download='persediaan-kahwin-'+today()+'.json';a.click()};
   document.getElementById('imp').onclick=()=>document.getElementById('impf').click();
   document.getElementById('impf').onchange=async e=>{try{const d=JSON.parse(await e.target.files[0].text());if(!d.settings||!Array.isArray(d.costs))throw 0;
     if(confirm('Gantikan semua data sekarang dengan fail ini?')){S={savings:[],guests:[],tasks:[],...d};save();close();render();toast('Data diimport')}}catch(_){toast('Fail tidak sah')}};
 }
 
-document.getElementById('fab').onclick=()=>({cost:formCost,save:formSave,task:formTask,guest:formGuest}[tab]||(()=>{}))();
 document.getElementById('app').onclick=e=>{
   const q=s=>e.target.closest(s);let el;
   if(q('#gear')||q('#setDate'))return formSettings();
+  if(q('[data-photo]'))return pickPhoto(setPhoto);
+  if(q('#wall'))return wallpaper();
+  if(q('[data-add]'))return ({cost:formCost,save:formSave,task:formTask,guest:formGuest}[tab]||(()=>{}))();
   if(el=q('[data-toggle]')){const t=S.tasks.find(x=>x.id===el.dataset.toggle);t.done=!t.done;save();render();return}
   if(el=q('[data-cost]'))return formCost(S.costs.find(x=>x.id===el.dataset.cost));
   if(el=q('[data-save]'))return formSave(S.savings.find(x=>x.id===el.dataset.save));
