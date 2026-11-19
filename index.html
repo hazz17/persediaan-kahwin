@@ -213,6 +213,15 @@ input:focus,select:focus{outline:0;border-color:var(--gold);box-shadow:0 0 0 4px
 
 .toast{position:fixed;left:50%;bottom:calc(110px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--btn2,#4a1a2e);color:var(--gold-2);border:1px solid rgba(230,200,143,.4);padding:10px 18px;border-radius:99px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:30;white-space:nowrap}
 .toast.show{opacity:1}
+.toast.act{pointer-events:auto;display:flex;align-items:center;gap:12px;padding:8px 8px 8px 18px}
+.toast button{appearance:none;border:0;border-radius:99px;padding:7px 12px;background:var(--goldgrad);color:#3a1222;font:600 13px Inter,sans-serif;cursor:pointer}
+.ra{display:flex;gap:6px;flex:none}
+.ib{appearance:none;width:34px;height:34px;border-radius:11px;border:1px solid color-mix(in srgb,var(--gold) 25%,var(--line));background:var(--card);color:var(--muted);display:grid;place-items:center;cursor:pointer;padding:0}
+.ib svg{width:16px;height:16px}
+.ib:hover{color:var(--accent)}
+.ib.del{color:var(--warn)}
+.evfoot .ra{margin-left:6px}
+@media (max-width:420px){.list .row .av{display:none}}
 .hidden{display:none!important}
 </style>
 </head>
@@ -261,7 +270,8 @@ const rm=n=>'RM '+num(n).toLocaleString('ms-MY',{minimumFractionDigits:0,maximum
 const fmtDate=d=>d?new Date(d+'T00:00').toLocaleDateString('ms-MY',{day:'numeric',month:'short',year:'numeric'}):'';
 const sum=(a,f)=>a.reduce((t,x)=>t+num(f(x)),0);
 const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
-function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),1900)}
+function undoToast(m,fn){const t=document.getElementById('toast');t.innerHTML='';t.append(m);const b=document.createElement('button');b.textContent='Buat asal';b.onclick=()=>{fn();t.classList.remove('show','act')};t.append(b);t.classList.add('show','act');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show','act'),8000)}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.remove('act');t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),1900)}
 
 const ICONS={
  home:'<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
@@ -274,6 +284,9 @@ const ICONS={
  img:'<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/>',
  gear:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>'
 };
+ICONS.edit='<path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M14 6l4 4"/>';
+ICONS.trash='<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/>';
+const ra=(t,id)=>`<div class="ra"><button class="ib" data-edit="${t}:${id}" aria-label="Edit">${icon('edit')}</button><button class="ib del" data-del="${t}:${id}" aria-label="Padam">${icon('trash')}</button></div>`;
 ICONS.palette='<path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.5-.8 1.5-1.5 0-.9-.7-1.2-.7-2 0-.8.7-1.5 1.5-1.5H17a4 4 0 0 0 4-4c0-5-4-9-9-9z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7" r="1"/><circle cx="14.5" cy="7" r="1"/>';
 
 /* ---------- 5 reka bentuk kad (SVG, ikut saiz) ---------- */
@@ -401,7 +414,7 @@ function vHome(){
   </div>
   <h2>Bayaran akan datang</h2>
   <div class="card list">${due.length?due.map(c=>`<div class="row" data-cost="${c.id}"><div class="av">${esc((c.name||'?')[0].toUpperCase())}</div><div class="main"><div class="t">${esc(c.name)}</div><div class="s">${esc(c.vendor||c.cat)}</div></div>
-    <div class="amt">${rm(num(c.est)-num(c.paid))}<small><span class="pill ${c.due<now?'warn':''}">${c.due<now?'Lewat · ':''}${fmtDate(c.due)}</span></small></div></div>`).join(''):'<div class="empty" style="padding:14px">Tiada bayaran tertunggak.<br>Letak <b>tarikh akhir bayar</b> pada item kos untuk peringatan.</div>'}</div>`;
+    <div class="amt">${rm(num(c.est)-num(c.paid))}<small><span class="pill ${c.due<now?'warn':''}">${c.due<now?'Lewat · ':''}${fmtDate(c.due)}</span></small></div>${ra('cost',c.id)}</div>`).join(''):'<div class="empty" style="padding:14px">Tiada bayaran tertunggak.<br>Letak <b>tarikh akhir bayar</b> pada item kos untuk peringatan.</div>'}</div>`;
 }
 function vCost(){
   const evs=evList();
@@ -422,7 +435,7 @@ function vCostList(evs){
     <div class="evtop"><div style="min-width:0"><div class="evname">${esc(b.name)}</div><div class="sub">${[b.date?fmtDate(b.date):'',b.venue?esc(b.venue):'',b.n+' item'].filter(Boolean).join(' · ')}</div></div>
      <div class="evamt">${rm(b.est)}<small>${all?Math.round(b.est/all*100):0}% daripada jumlah</small></div></div>
     <div class="bar gold"><i style="width:${b.est?b.paid/b.est*100:0}%"></i></div>
-    <div class="evfoot"><span>Dibayar <b style="color:var(--ok)">${rm(b.paid)}</b></span><span>Baki <b style="color:var(--warn)">${rm(b.est-b.paid)}</b></span><span class="go">Lihat kos ›</span></div></div>`).join('')}
+    <div class="evfoot"><span>Dibayar <b style="color:var(--ok)">${rm(b.paid)}</b></span><span>Baki <b style="color:var(--warn)">${rm(b.est-b.paid)}</b></span><span class="go">Lihat kos ›</span>${b.id?ra('ev',b.id):''}</div></div>`).join('')}
   <button class="addcard" data-newev>+ Tambah majlis baru</button>`
   :`<div class="card"><div class="empty"><span class="serif">Belum ada majlis</span>Tulis nama majlis anda sendiri, kemudian tambah kos dalam setiap majlis.<br><span style="font-size:12.5px">cth: Akad Nikah · Majlis Pihak Perempuan · Majlis Bertandang</span><br><button class="addbtn" data-newev>${icon('plus')}Tambah majlis pertama</button></div></div>`}`;
 }
@@ -441,7 +454,7 @@ function vCostDetail(e){
    <div class="bar gold" style="margin-bottom:4px"><i style="width:${s?p/s*100:0}%"></i></div>
    <div class="list">${g.items.map(c=>{const bal=num(c.est)-num(c.paid);return `<div class="row" data-cost="${c.id}"><div class="main"><div class="t">${esc(c.name)}</div>
      <div class="s">${[esc(c.vendor||''),c.due?'Bayar sebelum '+fmtDate(c.due):''].filter(Boolean).join(' · ')}</div></div>
-     <div class="amt">${rm(c.est)}<small>${bal<=0?'<span class="pill ok">Selesai</span>':'Baki '+rm(bal)}</small></div></div>`}).join('')}</div></div>`}).join('')
+     <div class="amt">${rm(c.est)}<small>${bal<=0?'<span class="pill ok">Selesai</span>':'Baki '+rm(bal)}</small></div>${ra('cost',c.id)}</div>`}).join('')}</div></div>`}).join('')
   :`<div class="card">${emptyBox('Belum ada kos','Tambah kos untuk majlis ini — cth: katering, pelamin, dewan.','Tambah kos pertama')}</div>`}`;
 }
 function vSave(){
@@ -450,7 +463,7 @@ function vSave(){
   <div class="card"><div class="stat"><div class="l">Jumlah terkumpul</div><div class="big" style="color:var(--ok)">${rm(T.saved)}</div></div>
    <div class="bar gold"><i style="width:${T.pct}%"></i></div>
    <div class="sub" style="margin-top:8px">${Math.round(T.pct)}% daripada ${rm(T.est)} · baki ${rm(T.need)}</div></div>
-  <div class="card list">${list.length?list.map(s=>`<div class="row" data-save="${s.id}"><div class="av">${esc((s.who||s.note||'S')[0].toUpperCase())}</div><div class="main"><div class="t">${esc(s.note||'Simpanan')}</div><div class="s">${fmtDate(s.date)}${s.who?' · '+esc(s.who):''}</div></div><div class="amt" style="color:var(--ok)">+${rm(s.amt)}</div></div>`).join('')
+  <div class="card list">${list.length?list.map(s=>`<div class="row" data-save="${s.id}"><div class="av">${esc((s.who||s.note||'S')[0].toUpperCase())}</div><div class="main"><div class="t">${esc(s.note||'Simpanan')}</div><div class="s">${fmtDate(s.date)}${s.who?' · '+esc(s.who):''}</div></div><div class="amt" style="color:var(--ok)">+${rm(s.amt)}</div>${ra('save',s.id)}</div>`).join('')
   :emptyBox('Tabung masih kosong','Rekod setiap kali menabung atau terima sumbangan.','Rekod simpanan')}</div>`;
 }
 function vTask(){
@@ -460,7 +473,7 @@ function vTask(){
   return head(`${done} daripada ${S.tasks.length} selesai`,'Senarai Semak',ADD.task)+`
   <div class="card" style="padding:14px 18px"><div class="bar gold" style="margin:0"><i style="width:${S.tasks.length?done/S.tasks.length*100:0}%"></i></div></div>
   ${WHEN.map((w,i)=>{const items=S.tasks.filter(t=>(t.when??0)==i);if(!items.length)return'';return `<div class="card"><div class="catHead"><h3>${w}</h3><span class="sub">${items.filter(t=>t.done).length}/${items.length}</span></div>
-   <div class="list">${items.map(t=>`<div class="row ${t.done?'done':''}" data-task="${t.id}"><div class="chk ${t.done?'on':''}" data-toggle="${t.id}">${t.done?'✓':''}</div><div class="main"><div class="t">${esc(t.text)}</div></div></div>`).join('')}</div></div>`}).join('')}
+   <div class="list">${items.map(t=>`<div class="row ${t.done?'done':''}" data-task="${t.id}"><div class="chk ${t.done?'on':''}" data-toggle="${t.id}">${t.done?'✓':''}</div><div class="main"><div class="t">${esc(t.text)}</div></div>${ra('task',t.id)}</div>`).join('')}</div></div>`}).join('')}
   <div style="display:flex;justify-content:center;gap:22px;margin:4px 0 8px">${S.tasks.length<DEFAULT_TASKS.length?'<button class="linkbtn" data-suggest>+ Tambah senarai cadangan</button>':''}<button class="linkbtn" style="color:var(--warn)" data-cleartasks>Kosongkan senarai</button></div>`;
 }
 function vGuest(){
@@ -474,7 +487,7 @@ function vGuest(){
   </div>
   <div class="seg" id="gseg">${[['all','Semua'],['lelaki','Lelaki'],['perempuan','Perempuan']].map(([k,l])=>`<button class="${f===k?'on':''}" data-f="${k}">${l}</button>`).join('')}</div>
   <div class="card list">${list.length?list.map(g=>`<div class="row" data-guest="${g.id}"><div class="av">${esc((g.name||'?')[0].toUpperCase())}</div><div class="main"><div class="t">${esc(g.name)}</div><div class="s">${g.side==='lelaki'?'Pihak lelaki':'Pihak perempuan'}${g.phone?' · '+esc(g.phone):''}</div></div>
-   <div class="amt">${num(g.pax)||1} pax<small><span class="pill ${st[g.status]||''}">${g.status==='hadir'?'Hadir':g.status==='tidak'?'Tidak hadir':'Belum jawab'}</span></small></div></div>`).join('')
+   <div class="amt">${num(g.pax)||1} pax<small><span class="pill ${st[g.status]||''}">${g.status==='hadir'?'Hadir':g.status==='tidak'?'Tidak hadir':'Belum jawab'}</span></small></div>${ra('guest',g.id)}</div>`).join('')
   :emptyBox('Belum ada tetamu','Tambah keluarga dan kawan, satu baris setiap keluarga.','Tambah tetamu')}</div>`;
 }
 
@@ -585,6 +598,21 @@ function formEvent(e={}){
     else{const n={id:uid(),...o};S.events.push(n);costView=n.id;toast('Majlis ditambah — sekarang tambah kos')}
   },e.id&&(()=>{S.events=S.events.filter(x=>x.id!==e.id);S.costs.forEach(c=>{if(c.ev===e.id)c.ev=''});costView=null}));
 }
+const KINDS={cost:{arr:()=>S.costs,set:v=>S.costs=v,form:c=>formCost(c),label:x=>x.name,what:'kos'},
+  save:{arr:()=>S.savings,set:v=>S.savings=v,form:x=>formSave(x),label:x=>x.note||rm(x.amt),what:'simpanan'},
+  task:{arr:()=>S.tasks,set:v=>S.tasks=v,form:x=>formTask(x),label:x=>x.text,what:'tugasan'},
+  guest:{arr:()=>S.guests,set:v=>S.guests=v,form:x=>formGuest(x),label:x=>x.name,what:'tetamu'},
+  ev:{arr:()=>S.events,set:v=>S.events=v,form:x=>formEvent(x),label:x=>x.name,what:'majlis'}};
+function editItem(k,id){const K=KINDS[k],x=K&&K.arr().find(i=>i.id===id);if(x)K.form(x)}
+function delItem(k,id){const K=KINDS[k],arr=K&&K.arr(),i=arr?arr.findIndex(x=>x.id===id):-1;if(i<0)return;const x=arr[i];
+  const n=k==='ev'?S.costs.filter(c=>c.ev===id).length:0;
+  if(!confirm(`Padam ${K.what} "${K.label(x)}"?`+(n?`\n\n${n} item kos dalam majlis ini akan dipindah ke "Tanpa majlis".`:'')))return;
+  const moved=k==='ev'?S.costs.filter(c=>c.ev===id).map(c=>c.id):[];
+  K.set(arr.filter(y=>y.id!==id));S.costs.forEach(c=>{if(moved.includes(c.id))c.ev=''});
+  if(k==='ev'&&costView===id)costView=null;
+  save();render();
+  undoToast(K.what[0].toUpperCase()+K.what.slice(1)+' dipadam',()=>{const a=K.arr().slice();a.splice(Math.min(i,a.length),0,x);K.set(a);
+    S.costs.forEach(c=>{if(moved.includes(c.id))c.ev=id});save();render();toast('Dipulihkan')})}
 function formSave(s={}){openForm('Tabung',s.id?'Kemaskini Simpanan':'Rekod Simpanan',[
   {fields:[{k:'amt',l:'Jumlah',t:'money',req:1},{k:'date',l:'Tarikh',t:'date',d:today()},{k:'note',l:'Catatan',p:'cth: Gaji Disember / Duit ASB'},{k:'who',l:'Daripada',p:'cth: Saya / Tunang / Mak ayah'}]}],s,
   o=>{upsert(S.savings,{...s,...o,id:s.id||uid(),amt:num(o.amt)});toast('Simpanan direkod')},s.id&&(()=>S.savings=S.savings.filter(x=>x.id!==s.id)))}
@@ -621,6 +649,8 @@ function formSettings(){
 
 document.getElementById('app').onclick=e=>{
   const q=s=>e.target.closest(s);let el;
+  if(el=q('[data-del]'))return delItem(...el.dataset.del.split(':'));
+  if(el=q('[data-edit]'))return editItem(...el.dataset.edit.split(':'));
   if(q('#gear')||q('#setDate'))return formSettings();
   if(q('[data-photo]'))return pickPhoto(setPhoto);
   if(q('[data-cycle]')){S.settings.theme=(themeIdx()+1)%THEMES.length;save();render();return toast(THEMES[themeIdx()].n)}
