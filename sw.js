@@ -1,4 +1,4 @@
-const CACHE = 'kahwin-v14';
+const CACHE = 'kahwin-v15';
 const ASSETS = ['./', './index.html', './manifest.json', './sync.js?v=1', './firebase-config.js',
   './icons/icon-192.png?v=7', './icons/icon-512.png?v=7', './icons/icon-180.png?v=7', './icons/icon-maskable.png?v=7'];
 // Fail luar yang boleh disimpan untuk guna tanpa internet: font Google & SDK Firebase.
