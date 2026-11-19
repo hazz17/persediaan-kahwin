@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#4a1a2e">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon-192.png">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Kahwin">
@@ -47,6 +47,7 @@ h2{font-size:24px;margin:26px 2px 10px}
 .top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:4px 2px 16px}
 .kick{text-transform:uppercase;letter-spacing:2.6px;font-size:10.5px;color:var(--gold);font-weight:600;margin-bottom:2px}
 .sub{color:var(--muted);font-size:13px}
+.logo{width:52px;height:52px;border-radius:16px;flex:none;box-shadow:var(--shadow);border:1px solid color-mix(in srgb,var(--gold) 25%,var(--line))}
 .addbtn{appearance:none;border:0;cursor:pointer;flex:none;display:inline-flex;align-items:center;gap:6px;padding:10px 16px 10px 12px;border-radius:99px;
   font:600 14px Inter,sans-serif;color:#3a1222;background:var(--goldgrad);box-shadow:0 8px 20px -8px rgba(156,115,56,.8),inset 0 1px 0 rgba(255,255,255,.55)}
 .addbtn svg{width:18px;height:18px}
@@ -320,7 +321,7 @@ function vHome(){
   const due=S.costs.filter(c=>c.due&&num(c.est)-num(c.paid)>0).sort((a,b)=>a.due.localeCompare(b.due)).slice(0,4);
   const r=50,C=2*Math.PI*r;
   return `
-  <div class="top"><div><div class="kick">Persediaan Perkahwinan</div><h1>Assalamualaikum</h1></div>
+  <div class="top"><div style="display:flex;gap:12px;align-items:center"><img src="icons/icon-192.png" alt="" class="logo"><div><div class="kick">Persediaan Perkahwinan</div><h1>Assalamualaikum</h1></div></div>
    <button class="iconbtn" id="gear" aria-label="Tetapan">${icon('gear')}</button></div>
   <div class="card hero ${s.photo?'photo':'themed'} ${!s.photo&&THEMES[themeIdx()].light?'light':''}" ${s.photo?heroBg():`style="--h-ink:${THEMES[themeIdx()].ink||'#fff'};--h-num:${THEMES[themeIdx()].num||'#fff'}"`}>
     <button class="glass" style="left:16px" data-cycle aria-label="Tukar reka bentuk">${icon('palette')}</button>
