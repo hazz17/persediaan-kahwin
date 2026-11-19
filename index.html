@@ -153,7 +153,10 @@ h2{font-size:24px;margin:26px 2px 10px}
 .evh{font-size:30px;line-height:1.1;overflow-wrap:anywhere}
 .roomcode{margin:14px 0 4px;text-align:center;font:600 34px/1 "Playfair Display",serif;letter-spacing:4px;color:var(--accent);padding:16px;border-radius:16px;background:var(--accent-soft);border:1px dashed color-mix(in srgb,var(--gold) 55%,transparent)}
 .btn[disabled]{opacity:.55;cursor:wait}
-.back{appearance:none;border:0;background:none;color:var(--gold);font:600 13.5px Inter,sans-serif;padding:4px 0;margin:0 2px 2px;cursor:pointer}
+.back{appearance:none;display:inline-flex;align-items:center;gap:8px;padding:10px 18px 10px 12px;margin:2px 0 14px;border-radius:99px;cursor:pointer;background:var(--card);color:var(--accent);border:1px solid color-mix(in srgb,var(--gold) 40%,var(--line));box-shadow:var(--shadow);font:600 14.5px Inter,sans-serif}
+.back .bi{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--herograd);color:var(--gold-2)}
+.back .bi svg{width:16px;height:16px}
+.back:active{transform:scale(.97)}
 .chk{width:26px;height:26px;border-radius:9px;border:1.5px solid color-mix(in srgb,var(--gold) 50%,var(--line));flex:none;display:grid;place-items:center;cursor:pointer;font-size:14px}
 .chk.on{background:var(--goldgrad);border-color:transparent;color:#3a1222}
 .done .t{text-decoration:line-through;color:var(--muted)}
@@ -295,6 +298,7 @@ const ICONS={
 ICONS.edit='<path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M14 6l4 4"/>';
 ICONS.trash='<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/>';
 const ra=(t,id)=>`<div class="ra"><button class="ib" data-edit="${t}:${id}" aria-label="Edit">${icon('edit')}</button><button class="ib del" data-del="${t}:${id}" aria-label="Padam">${icon('trash')}</button></div>`;
+ICONS.back='<path d="M19 12H5M11 6l-6 6 6 6"/>';
 ICONS.palette='<path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.5-.8 1.5-1.5 0-.9-.7-1.2-.7-2 0-.8.7-1.5 1.5-1.5H17a4 4 0 0 0 4-4c0-5-4-9-9-9z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7" r="1"/><circle cx="14.5" cy="7" r="1"/>';
 
 /* ---------- 5 reka bentuk kad (SVG, ikut saiz) ---------- */
@@ -450,7 +454,7 @@ function vCostList(evs){
 function vCostDetail(e){
   const items=S.costs.filter(c=>evOf(c)===e.id),est=sum(items,c=>c.est),paid=sum(items,c=>c.paid);
   const groups=CATS.map(cat=>({cat,items:items.filter(c=>(c.cat||'Lain-lain')===cat)})).filter(g=>g.items.length);
-  return `<button class="back" data-back>‹ Semua majlis</button>
+  return `<button class="back" data-back aria-label="Kembali ke semua majlis"><span class="bi">${icon('back')}</span>Kembali ke semua majlis</button>
   <div class="top col"><div style="min-width:0"><div class="kick">${[e.date?fmtDate(e.date):'Majlis',e.venue?esc(e.venue):''].filter(Boolean).join(' · ')}</div><h1 class="evh">${esc(e.name)}</h1></div>
    <button class="addbtn" data-add>${icon('plus')}Tambah kos</button></div>
   <div class="card" style="--c:${e.col}"><div class="catHead"><div class="stat"><div class="l">Jumlah kos majlis ini</div><div class="big">${rm(est)}</div></div>${e.id?'<button class="linkbtn" data-editev>Edit majlis</button>':''}</div>
@@ -603,7 +607,7 @@ function formEvent(e={}){
     [{k:'date',l:'Tarikh',t:'date'},{k:'venue',l:'Lokasi',p:'Pilihan'}]],
     html:e.id?'<div class="hint">Jika majlis dipadam, kosnya dipindah ke "Tanpa majlis" — tiada kos yang hilang.</div>':''}],e,o=>{
     if(e.id){Object.assign(e,o);toast('Majlis dikemas kini')}
-    else{const n={id:uid(),...o};S.events.push(n);costView=n.id;toast('Majlis ditambah — sekarang tambah kos')}
+    else{const n={id:uid(),...o};S.events.push(n);openEv(n.id);toast('Majlis ditambah — sekarang tambah kos')}
   },e.id&&(()=>{S.events=S.events.filter(x=>x.id!==e.id);S.costs.forEach(c=>{if(c.ev===e.id)c.ev=''});costView=null}));
 }
 const KINDS={cost:{arr:()=>S.costs,set:v=>S.costs=v,form:c=>formCost(c),label:x=>x.name,what:'kos'},
@@ -621,6 +625,10 @@ function delItem(k,id){const K=KINDS[k],arr=K&&K.arr(),i=arr?arr.findIndex(x=>x.
   save();render();
   undoToast(K.what[0].toUpperCase()+K.what.slice(1)+' dipadam',()=>{const a=K.arr().slice();a.splice(Math.min(i,a.length),0,x);K.set(a);
     S.costs.forEach(c=>{if(moved.includes(c.id))c.ev=id});save();render();toast('Dipulihkan')})}
+// Buka majlis sebagai 'halaman' dalam sejarah browser supaya butang Back telefon kembali ke senarai
+function openEv(id){costView=id;try{history.pushState({cv:id},'')}catch(e){}render();scrollTo(0,0)}
+function backEv(){if(history.state&&history.state.cv)history.back();else{costView=null;render();scrollTo(0,0)}}
+addEventListener('popstate',e=>{const cv=e.state&&e.state.cv;if(document.getElementById('mask').classList.contains('show'))close();costView=cv||null;if(tab==='cost'){render();scrollTo(0,0)}});
 function formSave(s={}){openForm('Tabung',s.id?'Kemaskini Simpanan':'Rekod Simpanan',[
   {fields:[{k:'amt',l:'Jumlah',t:'money',req:1},{k:'date',l:'Tarikh',t:'date',d:today()},{k:'note',l:'Catatan',p:'cth: Gaji Disember / Duit ASB'},{k:'who',l:'Daripada',p:'cth: Saya / Tunang / Mak ayah'}]}],s,
   o=>{upsert(S.savings,{...s,...o,id:s.id||uid(),amt:num(o.amt)});toast('Simpanan direkod')},s.id&&(()=>S.savings=S.savings.filter(x=>x.id!==s.id)))}
@@ -663,8 +671,8 @@ document.getElementById('app').onclick=e=>{
   if(q('[data-photo]'))return pickPhoto(setPhoto);
   if(q('[data-cycle]')){S.settings.theme=(themeIdx()+1)%THEMES.length;save();render();return toast(THEMES[themeIdx()].n)}
   if(q('#wall'))return wallpaper();
-  if(el=q('[data-open]')){costView=el.dataset.open;render();return scrollTo(0,0)}
-  if(q('[data-back]')){costView=null;render();return scrollTo(0,0)}
+  if(el=q('[data-open]'))return openEv(el.dataset.open);
+  if(q('[data-back]'))return backEv();
   if(q('[data-newev]'))return formEvent();
   if(q('[data-editev]'))return formEvent(S.events.find(e=>e.id===costView));
   if(q('[data-add]'))return ({cost:formCost,save:formSave,task:formTask,guest:formGuest}[tab]||(()=>{}))();
