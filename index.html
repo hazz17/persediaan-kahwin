@@ -151,6 +151,8 @@ h2{font-size:24px;margin:26px 2px 10px}
 .addcard{appearance:none;width:100%;padding:16px;border-radius:var(--radius);border:1.5px dashed color-mix(in srgb,var(--gold) 55%,var(--line));background:transparent;color:var(--gold);font:600 14px Inter,sans-serif;cursor:pointer;margin-bottom:12px}
 .top.col{flex-direction:column;align-items:flex-start;gap:12px}
 .evh{font-size:30px;line-height:1.1;overflow-wrap:anywhere}
+.roomcode{margin:14px 0 4px;text-align:center;font:600 34px/1 "Playfair Display",serif;letter-spacing:4px;color:var(--accent);padding:16px;border-radius:16px;background:var(--accent-soft);border:1px dashed color-mix(in srgb,var(--gold) 55%,transparent)}
+.btn[disabled]{opacity:.55;cursor:wait}
 .back{appearance:none;border:0;background:none;color:var(--gold);font:600 13.5px Inter,sans-serif;padding:4px 0;margin:0 2px 2px;cursor:pointer}
 .chk{width:26px;height:26px;border-radius:9px;border:1.5px solid color-mix(in srgb,var(--gold) 50%,var(--line));flex:none;display:grid;place-items:center;cursor:pointer;font-size:14px}
 .chk.on{background:var(--goldgrad);border-color:transparent;color:#3a1222}
@@ -249,7 +251,10 @@ const evList=()=>{const l=S.events.map((e,i)=>({...e,col:EV_COLORS[i%EV_COLORS.l
   if(S.costs.some(c=>!c.ev||!S.events.find(e=>e.id===c.ev)))l.push({id:'',name:'Tanpa majlis',col:'#a89a8f'});return l};
 const evOf=c=>S.events.find(e=>e.id===c.ev)?c.ev:'';
 try{tab=localStorage.getItem(KEY+'-tab')||'home'}catch(e){}
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S));return true}catch(e){toast('Ruang simpanan penuh');return false}};
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('Ruang simpanan penuh');return false}try{window.Sync&&Sync.push()}catch(e){}return true};
+// dipanggil oleh sync.js bila data pasangan berubah; gambar kekal tempatan
+function applyRemote(r){const photo=S.settings.photo;S=fix({savings:[],guests:[],tasks:[],costs:[],...r});S.settings={...S.settings,photo};try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}render()}
+window.App={get S(){return S},applyRemote,toast:m=>toast(m),render:()=>render()};
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const num=v=>Math.max(0,parseFloat(v)||0);
 const rm=n=>'RM '+num(n).toLocaleString('ms-MY',{minimumFractionDigits:0,maximumFractionDigits:2});
@@ -594,11 +599,13 @@ function formSettings(){
    {title:'Pasangan',fields:[{k:'n1',l:'Pengantin lelaki',p:'cth: Ahmad'},{k:'n2',l:'Pengantin perempuan',p:'cth: Aisyah'}],
     html:`<label>Gambar pasangan</label><div class="photoPick">${thumb()}<div class="btns"><button type="button" class="btn line" id="pp">Pilih gambar</button><button type="button" class="btn danger" id="pr" style="padding:6px">Buang gambar</button></div></div>`},
    {title:'Reka bentuk kad',fields:[],html:`<div class="themes">${THEMES.map((t,i)=>`<button type="button" class="th ${i===pt?'on':''}" data-th="${i}"><i></i><span>${t.n}</span></button>`).join('')}</div><div class="hint">Warna seluruh app ikut reka bentuk ini. Corak kad digunakan bila tiada gambar pasangan. Boleh juga tukar terus dengan butang palet di kad utama.</div>`},
+   {title:'Kongsi dengan pasangan',fields:[],html:'<div id="syncBox"></div>'},
    {title:'Majlis',fields:[[{k:'date',l:'Tarikh',t:'date'},{k:'time',l:'Masa',t:'time'}],{k:'venue',l:'Lokasi',p:'cth: Dewan Seri Melati'}]},
    {title:'Sandaran data',fields:[],html:`<div class="duo" style="margin-top:10px"><button type="button" class="btn line" id="exp">Eksport</button><button type="button" class="btn line" id="imp">Import</button></div>
     <input type="file" id="impf" accept="application/json" class="hidden"><div class="hint">Data disimpan dalam telefon ini sahaja. Eksport untuk sandaran atau pindah ke telefon pasangan.</div>`}],
    S.settings,o=>{const old={...S.settings};S.settings={...S.settings,...o,photo:pending,theme:pt};if(!save()){S.settings=old}else toast('Tetapan disimpan')});
   const upd=()=>{document.getElementById('thumb').outerHTML=thumb()};
+  const sb=document.getElementById('syncBox');window.Sync?Sync.mount(sb):sb.innerHTML='<div class="hint">Sedang memuatkan…</div>';
   document.querySelectorAll('.th').forEach(b=>{b.querySelector('i').style.backgroundImage=`url("${svgURI(+b.dataset.th,90,120)}")`;
     b.onclick=()=>{pt=+b.dataset.th;applyTheme(pt);document.querySelectorAll('.th').forEach(x=>x.classList.toggle('on',x===b))}});
   document.getElementById('pp').onclick=()=>pickPhoto(d=>{pending=d;upd()});
@@ -629,7 +636,9 @@ document.getElementById('app').onclick=e=>{
 };
 
 render();
+window.Sync||(window.Sync=null);
 if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 </script>
+<script type="module" src="sync.js?v=1"></script>
 </body>
 </html>
